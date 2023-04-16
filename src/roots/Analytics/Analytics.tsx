@@ -6,10 +6,10 @@ import {
     View,
     Cell,
     PullToRefresh, Separator
-} from "@vkontakte/vkui";
+} from "@vkontakte/vkui/dist";
 import PanelHeader from "../../PanelHeader";
 
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 import RootStore from "../../stores/RootStore";
 import './Analytics.scss'
 import Group from "@vkontakte/vkui/dist/components/Group/Group";

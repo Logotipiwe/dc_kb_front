@@ -1,7 +1,7 @@
 import React from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
-import Icon24Cancel from '@vkontakte/icons/dist/24/cancel'
+import {Icon24Cancel} from '@vkontakte/icons'
 import Cell from '@vkontakte/vkui/dist/components/Cell/Cell';
 import {
 	Card,
@@ -19,14 +19,14 @@ import {
 	SelectMimicry,
 	Spinner,
 	View
-} from "@vkontakte/vkui";
+} from "@vkontakte/vkui/dist";
 import CellButton from "@vkontakte/vkui/dist/components/CellButton/CellButton";
 import ModalPageHeader from "@vkontakte/vkui/dist/components/ModalPageHeader/ModalPageHeader";
 import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
 import FormStatus from "@vkontakte/vkui/dist/components/FormStatus/FormStatus";
 
 import './Transactions.scss'
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 import Group from "@vkontakte/vkui/dist/components/Group/Group";
 import Header from "@vkontakte/vkui/dist/components/Header/Header";
 import RootStore from "../../stores/RootStore";

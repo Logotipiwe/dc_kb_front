@@ -1,17 +1,17 @@
 import * as React from 'react';
-import {Epic, Tabbar, TabbarItem} from '@vkontakte/vkui'
+import {Epic, Tabbar, TabbarItem} from '@vkontakte/vkui/dist'
 import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
 import '@vkontakte/vkui/dist/vkui.css';
-import Icon28HomeOutline from '@vkontakte/icons/dist/28/home_outline';
-import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
-import Icon28ListOutline from '@vkontakte/icons/dist/28/list_outline';
-import Icon28WalletOutline from '@vkontakte/icons/dist/28/wallet_outline';
-import Icon28GraphOutline from '@vkontakte/icons/dist/28/graph_outline';
+import {Icon28HomeOutline} from '@vkontakte/icons';
+import {Icon28ListAddOutline} from '@vkontakte/icons';
+import {Icon28ListOutline} from '@vkontakte/icons';
+import {Icon28WalletOutline} from '@vkontakte/icons';
+import {Icon28GraphOutline} from '@vkontakte/icons';
 import Home from "./roots/Home/Home";
 import Transactions from "./roots/Transactions/Transactions";
 import Menu from "./roots/Menu/Menu";
 import Login from './Login'
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 import RootStore from './stores/RootStore'
 import Wallets from "./roots/Wallets/Wallets";
 import Analytics from "./roots/Analytics/Analytics";

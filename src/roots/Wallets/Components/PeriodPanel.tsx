@@ -1,9 +1,9 @@
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 import RootStore from "../../../stores/RootStore";
-import {Button, Cell, Div, FormLayout, FormLayoutGroup, Header, Input, PanelHeaderSimple} from "@vkontakte/vkui";
+import {Button, Cell, Div, FormLayout, FormLayoutGroup, Header, Input, PanelHeaderSimple} from "@vkontakte/vkui/dist";
 import PeriodWallets from "./PeriodWallets";
 import React from "react";
-import Icon28ArrowLeftOutline from '@vkontakte/icons/dist/28/arrow_left_outline';
+import {Icon28ArrowLeftOutline} from '@vkontakte/icons';
 import {IPeriodWallet} from "../../../global";
 
 

@@ -1,7 +1,7 @@
 import React from "react";
-import {Input} from "@vkontakte/vkui";
+import {Input} from "@vkontakte/vkui/dist";
 import RootStore from "../../../stores/RootStore";
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 
 @inject('RootStore')
 @observer

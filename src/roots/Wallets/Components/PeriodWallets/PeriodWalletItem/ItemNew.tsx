@@ -1,7 +1,7 @@
-import {Div, Input, Select} from "@vkontakte/vkui";
+import {Div, Input, Select} from "@vkontakte/vkui/dist";
 import React from "react";
 import Wallet from "../../../../../stores/models/Wallet";
-import {inject} from "mobx-react";
+import {inject} from "mobx-react/dist";
 import RootStore from "../../../../../stores/RootStore";
 import {IPeriodWalletFieldProp, Nullable} from "../../../../../global";
 

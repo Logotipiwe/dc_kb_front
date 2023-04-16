@@ -1,10 +1,10 @@
 import ModalPageHeader from "@vkontakte/vkui/dist/components/ModalPageHeader/ModalPageHeader";
 import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
-import {Cell, Div, FormLayout, FormLayoutGroup, InfoRow, Input, ModalPage} from "@vkontakte/vkui";
+import {Cell, Div, FormLayout, FormLayoutGroup, InfoRow, Input, ModalPage} from "@vkontakte/vkui/dist";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
-import Icon24Cancel from '@vkontakte/icons/dist/24/cancel'
+import {Icon24Cancel} from '@vkontakte/icons'
 import React from "react";
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 import FormStatus from "@vkontakte/vkui/dist/components/FormStatus/FormStatus";
 import PeriodWallets from "./PeriodWallets";
 

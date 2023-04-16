@@ -8,11 +8,11 @@ import {
 	Div,
 	Header, Root, View,
 	PullToRefresh, CellButton
-} from "@vkontakte/vkui";
+} from "@vkontakte/vkui/dist";
 
 import PanelHeader from "../../PanelHeader";
 
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 import RootStore from "../../stores/RootStore";
 
 @inject("RootStore")

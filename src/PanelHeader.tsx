@@ -1,11 +1,11 @@
 import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
 import PanelHeaderContent from "@vkontakte/vkui/dist/components/PanelHeaderContent/PanelHeaderContent";
-import {PanelHeaderSimple} from "@vkontakte/vkui";
-import Icon24BrowserForward from '@vkontakte/icons/dist/24/browser_forward';
-import Icon24BrowserBack from '@vkontakte/icons/dist/24/browser_back';
-import Icon24Repost from '@vkontakte/icons/dist/24/repost';
+import {PanelHeaderSimple} from "@vkontakte/vkui/dist";
+import {Icon24BrowserForward} from '@vkontakte/icons';
+import {Icon24BrowserBack} from '@vkontakte/icons';
+import {Icon24Repost} from '@vkontakte/icons';
 import React from "react";
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 import RootStore from "./stores/RootStore";
 
 @inject("RootStore")

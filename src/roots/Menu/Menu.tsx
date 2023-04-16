@@ -1,8 +1,8 @@
 import React from 'react';
-import {Cell, Header, PullToRefresh, Root, View} from "@vkontakte/vkui";
+import {Cell, Header, PullToRefresh, Root, View} from "@vkontakte/vkui/dist";
 import Panel from "@vkontakte/vkui/dist/components/Panel/Panel";
 import Group from "@vkontakte/vkui/dist/components/Group/Group";
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 import RootStore from "../../stores/RootStore";
 import PanelHeader from "../../PanelHeader";
 

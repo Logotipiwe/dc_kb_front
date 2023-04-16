@@ -8,13 +8,13 @@ import {
 	Root,
 	View,
 	PullToRefresh, Card, Alert
-} from "@vkontakte/vkui";
+} from "@vkontakte/vkui/dist";
 import Link from '@vkontakte/vkui/dist/components/Link/Link';
-import Icon24BrowserForward from "@vkontakte/icons/dist/24/browser_forward";
+import {Icon24BrowserForward} from "@vkontakte/icons";
 
 import PanelHeader from "../../PanelHeader";
 
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 import RootStore from "../../stores/RootStore";
 import NewWalletModal from "./Components/NewWalletModal";
 import DelWalletModal from "./Components/DelWalletModal";

@@ -2,10 +2,10 @@ import "core-js/features/map";
 import "core-js/features/set";
 import React from "react";
 import ReactDOM from "react-dom";
-import bridge from "@vkontakte/vk-bridge";
+import bridge from "@vkontakte/vk-bridge/dist/types/src";
 import App from "./App";
 import RootStore from './stores/RootStore'
-import {Provider} from "mobx-react";
+import {Provider} from "mobx-react/dist";
 // import './eruda'
 
 const store = new RootStore();

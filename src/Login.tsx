@@ -1,8 +1,8 @@
 import React from 'react';
-import {Button, FormLayout, FormStatus, Input, Link, Root, View} from "@vkontakte/vkui";
+import {Button, FormLayout, FormStatus, Input, Link, Root, View} from "@vkontakte/vkui/dist";
 import Panel from "@vkontakte/vkui/dist/components/Panel/Panel";
 import Div from "@vkontakte/vkui/dist/components/Div/Div";
-import {inject, observer} from "mobx-react";
+import {inject, observer} from "mobx-react/dist";
 import RootStore from './stores/RootStore';
 
 @inject("RootStore")

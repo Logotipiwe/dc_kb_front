@@ -1,9 +1,9 @@
 import Wallet from "../../../../../stores/models/Wallet";
 import React from "react";
 import ItemNew from "./ItemNew";
-import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
-import {Div, Input, Select, Checkbox} from "@vkontakte/vkui";
-import {inject, observer} from "mobx-react";
+import {Icon24Cancel} from '@vkontakte/icons';
+import {Div, Input, Select, Checkbox} from "@vkontakte/vkui/dist";
+import {inject, observer} from "mobx-react/dist";
 import RootStore from "../../../../../stores/RootStore";
 import {IPeriodWallet} from "../../../../../global";
 

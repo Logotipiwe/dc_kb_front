@@ -1,6 +1,6 @@
 import React, {RefObject} from "react";
-import {withModalRootContext} from "@vkontakte/vkui";
-import {inject, observer} from "mobx-react";
+import {withModalRootContext} from "@vkontakte/vkui/dist";
+import {inject, observer} from "mobx-react/dist";
 import RootStore from "../../../stores/RootStore";
 import {action} from "mobx";
 import WalletsUI from "../../../stores/UIStore/WalletsUI";
