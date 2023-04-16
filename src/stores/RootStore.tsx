@@ -29,8 +29,8 @@ class RootStore {
 	PeriodStore: PeriodStore;
 
 	@observable url = (process.env.NODE_ENV === 'development') ?
-		'http://localhost/keepbalance_back_new/back/api.php' :
-		'../keepbalance_back_new/back/api.php';
+		'http://localhost/back/api.php' :
+		'../back/api.php';
 	@observable appData: any = {};
 	@observable balances: Record<string, number> | undefined;
 	@observable auth = true;
