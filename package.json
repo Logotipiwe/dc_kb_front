@@ -21,11 +21,14 @@
         "eruda": "^2.4.1",
         "eruda-code": "^2.0.0",
         "eruda-dom": "^2.0.0",
+        "mobx": "^6.9.0",
+        "mobx-react": "^7.6.0",
         "prop-types": "^15.7.2",
         "react": "^17.0.2",
         "react-dom": "^17.0.2"
     },
     "devDependencies": {
+        "@types/react-dom": "^18.0.11",
         "cross-env": "^7.0.3",
         "react-hot-loader": "^4.13.0",
         "react-scripts": "^5.0.1"

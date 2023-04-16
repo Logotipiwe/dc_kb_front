@@ -1,0 +1,30 @@
+.img {
+	border-radius: 50%;
+	background-color: #49ff46;
+	width: 35px;
+	height: 35px;
+	margin: 2px;
+	
+	img {
+		$dol: 65%;
+		height: $dol;
+		width: $dol;
+		margin: (100-$dol)/2 0 0 (100-$dol)/2;
+	}
+}
+.category_card{
+	height: 60px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	font-size: 11px;
+}
+.my_form_select {
+	.Select__title{
+		font-size: 14px;
+	}
+}
+.CardGrid .category_card_outer {
+	width: calc((100% - 3*8px)/4) !important;
+}
