@@ -9,8 +9,8 @@ import {
 	View,
 	PullToRefresh, Card, Alert
 } from "@vkontakte/vkui";
-import Link from "@vkontakte/vkui/dist/components/Link/Link";
-import Icon24BrowserForward from '@vkontakte/icons/dist/24/browser_forward';
+import Link from '@vkontakte/vkui/dist/components/Link/Link';
+import Icon24BrowserForward from "@vkontakte/icons/dist/24/browser_forward";
 
 import PanelHeader from "../../PanelHeader";
 
