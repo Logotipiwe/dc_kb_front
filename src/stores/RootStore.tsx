@@ -30,7 +30,7 @@ class RootStore {
 
 	@observable url = (process.env.NODE_ENV === 'development') ?
 		'http://localhost/back/api.php' :
-		'../back/api.php';
+		'../kb_back/api.php';
 	@observable appData: any = {};
 	@observable balances: Record<string, number> | undefined;
 	@observable auth = true;

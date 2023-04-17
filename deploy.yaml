@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: kb-front
-          image: logotipiwe/kb_front:1
+          image: logotipiwe/kb_front:2
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -30,7 +30,27 @@ spec:
     app: kb-front
   type: ClusterIP
   ports:
-    - port: 82
+    - port: 80
       protocol: TCP
       targetPort: 80
 #      nodePort: 3306
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kb-front-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /keepbalancevk(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: kb-front-ser
+                port:
+                  number: 80
