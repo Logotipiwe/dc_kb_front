@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: kb-front
-          image: logotipiwe/kb_front:2
+          image: logotipiwe/kb_front:3
           imagePullPolicy: Always
           ports:
             - containerPort: 80
