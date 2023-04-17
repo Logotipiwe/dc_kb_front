@@ -1,6 +1,7 @@
 {
     "name": "mini-app",
     "version": "0.0.0",
+    "homepage": "keepbalancevk",
     "scripts": {
         "start": "cross-env PORT=10888 HTTPS=false react-scripts start",
         "build": "react-scripts build",
