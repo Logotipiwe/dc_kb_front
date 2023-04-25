@@ -3,6 +3,7 @@ name: Front CD
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
