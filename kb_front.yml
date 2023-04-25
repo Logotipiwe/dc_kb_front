@@ -1,0 +1,11 @@
+version: "3"
+services:
+  kb_front:
+    image: ${KB_FRONT_IMAGE}
+    ports:
+    - 80:80
+  networks:
+    - dc-net
+networks:
+  dc-net:
+    external: true
