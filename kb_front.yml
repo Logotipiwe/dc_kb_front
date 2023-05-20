@@ -3,6 +3,7 @@ services:
   kb_front:
     container_name: kb_front
     image: logotipiwe/kb_front
+    restart: always
     networks:
       - dc-net
 networks:
