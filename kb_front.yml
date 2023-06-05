@@ -2,7 +2,7 @@ version: "3"
 services:
   kb_front:
     container_name: kb_front
-    image: logotipiwe/kb_front
+    image: ${KB_FRONT_IMAGE}
     restart: always
     networks:
       - dc-net

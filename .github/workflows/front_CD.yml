@@ -27,9 +27,9 @@ jobs:
       id: build_push
       run: |
         ls
-        export KB_FRONT_IMAGE=${{ env.DOCKER_USER }}/kb_front
+        export KB_FRONT_IMAGE=${{ env.DOCKER_USER }}/kb_front:$(date +%s)
         docker build . -t ${KB_FRONT_IMAGE}
-        docker push -a ${KB_FRONT_IMAGE}
+        docker push ${KB_FRONT_IMAGE}
         echo "KB_FRONT_IMAGE=${KB_FRONT_IMAGE}" >> "$GITHUB_ENV"
     - name: Upload
       uses: garygrossgarten/github-action-scp@release
