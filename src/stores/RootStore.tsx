@@ -1,4 +1,4 @@
-import {action, computed, observable} from "mobx";
+import {action, computed, makeAutoObservable, observable} from "mobx";
 import WalletStore from './WalletStore'
 import TransactionsStore from "./TransactionsStore"
 import UIStore from "./UIStore";
@@ -7,6 +7,7 @@ import {Period} from "./models/Period";
 import PeriodStore from "./PeriodStore";
 import Wallet from "./models/Wallet";
 import {IGetDataResponse, IPeriod} from "../global";
+import autoBind from "../utils/autoBind";
 
 //TODO tags
 //TODO user settings (auto focus transaction value)
@@ -17,6 +18,9 @@ export interface RootStoreProp{
 
 class RootStore {
 	constructor() {
+		makeAutoObservable(this)
+		autoBind(this)
+
 		this.WalletStore = new WalletStore(this);
 		this.TransactionsStore = new TransactionsStore(this);
 		this.UIStore = new UIStore(this);
@@ -28,16 +32,18 @@ class RootStore {
 	UIStore: UIStore;
 	PeriodStore: PeriodStore;
 
-	@observable url = (process.env.NODE_ENV === 'development') ?
-		'http://localhost/back/api.php' :
+	isDev: boolean = process.env.NODE_ENV === "development";
+
+	url = this.isDev ?
+		'http://localhost/kb_back_service/api.php' :
 		'../kb_back_service/api.php';
-	@observable appData: any = {};
-	@observable balances: Record<string, number> | undefined;
-	@observable auth = true;
-	@observable currDate = (process.env.NODE_ENV === 'development') ? new Date() : new Date();
-	@observable dataLoaded = false;
-	@observable isFetchingProp: boolean = false;
-	@observable isNormalFetchTimePassed: boolean = true;
+	appData: any = {};
+	balances: Record<string, number> | undefined;
+	auth = true;
+	currDate = this.isDev ? new Date() : new Date();
+	dataLoaded = false;
+	isFetchingProp: boolean = false;
+	isNormalFetchTimePassed: boolean = true;
 	normalFetchTime: number = 500;
 
 	setAppData(appData: object) {
@@ -71,7 +77,7 @@ class RootStore {
 		});
 	};
 
-	@action.bound fetchData() {
+	fetchData() {
 		const date_str = this.getCurrDate;
 		let get = {
 			method: 'data_get',
@@ -140,15 +146,15 @@ class RootStore {
 		});
 	};
 
-	@computed get isFetching() {
+	get isFetching() {
 		return this.isFetchingProp || !this.isNormalFetchTimePassed
 	}
 
-	@action setAuth(val: boolean): void {
+	setAuth(val: boolean): void {
 		this.auth = val;
 	}
 
-	@computed get getCurrDate() {
+	get getCurrDate() {
 		let currDate = this.currDate;
 		return [
 			currDate.getFullYear(),
@@ -157,12 +163,12 @@ class RootStore {
 		].join('-');
 	};
 
-	@action.bound currDateChange(val: number) {
+	currDateChange(val: number) {
 		this.currDate = new Date(this.currDate.setDate(this.currDate.getDate() + val));
 		this.fetchData();
 	};
 
-	@action.bound setCurrDateToday() {
+	setCurrDateToday() {
 		this.currDate = new Date();
 		this.fetchData();
 	}
@@ -183,7 +189,7 @@ class RootStore {
 		].join('-')
 	};
 
-	@computed get isAllBalancesNull(){
+	get isAllBalancesNull(){
 		if(!this.balances) return true;
 		return Object.values(this.balances).every(b=>b === null);
 	}
@@ -226,7 +232,7 @@ class RootStore {
 		})
 	};
 
-	@action.bound logout = () => {
+	logout = () => {
 		const get = {
 			method: 'log_out'
 		};

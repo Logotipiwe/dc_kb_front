@@ -1,10 +1,12 @@
 import {action, observable} from "mobx";
 import UIStore from "../UIStore";
 import {LoginView} from "../../global";
+import autoBind from "../../utils/autoBind";
 
 export default class LoginUI {
     constructor(UIStore: UIStore) {
         this.UIStore = UIStore;
+        autoBind(this)
     }
 
     UIStore: UIStore;
@@ -29,9 +31,9 @@ export default class LoginUI {
             login: this.inputLogin,
             password: this.inputPassword,
         };
-        this.UIStore.RootStore.doAjax(data).then((x: Response) => x.json()).then((res: Response) => {
+        this.UIStore.rootStore.doAjax(data).then((x: Response) => x.json()).then((res: Response) => {
             if (res.ok) {
-                this.UIStore.RootStore.fetchData();
+                this.UIStore.rootStore.fetchData();
             }
         })
     }
@@ -55,9 +57,9 @@ export default class LoginUI {
             login: this.inputLoginReg,
             password: this.inputPasswordReg
         };
-        this.UIStore.RootStore.doAjax(data).then((x: Response) => x.json()).then((res: Response) => {
+        this.UIStore.rootStore.doAjax(data).then((x: Response) => x.json()).then((res: Response) => {
             if (res.ok) {
-                this.UIStore.RootStore.fetchData();
+                this.UIStore.rootStore.fetchData();
             }
         })
     };

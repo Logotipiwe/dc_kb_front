@@ -1,18 +1,23 @@
 import RootStore from "./RootStore";
-import {computed, observable} from "mobx";
+import {computed, makeAutoObservable, observable} from "mobx";
 import {Period} from "./models/Period";
+import autoBind from "../utils/autoBind";
 
 
 export default class PeriodStore {
 	constructor(RootStore: RootStore) {
+		makeAutoObservable(this)
+		autoBind(this)
 		this.RootStore = RootStore;
 	}
 
 	RootStore: RootStore;
 
-	@observable periods: Period[] = [];
+	isDev: boolean = process.env.NODE_ENV === "development";
 
-	@computed get currPeriod(){
+	periods: Period[] = [];
+
+	get currPeriod(){
 		const currTimestamp = this.RootStore.currDate.getTime();
 		const filtered = this.periods.filter((period)=>(
 			(period.startDate.getTime() <= currTimestamp)

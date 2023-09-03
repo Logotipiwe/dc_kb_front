@@ -1,4 +1,4 @@
-import {action, observable} from "mobx";
+import {action, makeAutoObservable, observable} from "mobx";
 import RootStore from './RootStore'
 import HomeUI from "./UIStore/HomeUI";
 import TransactionsUI from "./UIStore/TransactionsUI";
@@ -6,10 +6,14 @@ import LoginUI from "./UIStore/LoginUI";
 import WalletsUI from "./UIStore/WalletsUI";
 import AnalyticsUI from "./UIStore/AnalyticsUI";
 import {ActiveStories} from "../global";
+import rootStore from "./RootStore";
+import autoBind from "../utils/autoBind";
 
 class UIStore {
-	constructor(RootStore: RootStore) {
-		this.RootStore = RootStore;
+	constructor(rootStore: RootStore) {
+		makeAutoObservable(this)
+		autoBind(this)
+		this.rootStore = rootStore;
 
 		this.HomeUI = new HomeUI(this);
 		this.TransactionsUI = new TransactionsUI(this);
@@ -20,22 +24,24 @@ class UIStore {
 		this.LoginUI = new LoginUI(this);
 	}
 
-	RootStore: RootStore;
+	isDev: boolean = process.env.NODE_ENV === "development";
+
+	rootStore: RootStore;
 	HomeUI: HomeUI;
 	WalletsUI: WalletsUI;
 	TransactionsUI: TransactionsUI;
 	AnalyticsUI: AnalyticsUI;
 	LoginUI: LoginUI;
 
-	@observable activeStory: ActiveStories = (process.env.NODE_ENV === 'development') ? "transactions" : 'home';
+	activeStory: ActiveStories = this.isDev ? "wallets" : 'home';
 
-	@action.bound onStoryChange = (e: any) => {
+	onStoryChange = (e: any) => {
 		this.activeStory = e.currentTarget.dataset.story;
 	};
 
-	@action.bound refreshPage(){
-		this.RootStore.currDate = new Date();
-		this.RootStore.fetchData();
+	refreshPage(){
+		this.rootStore.currDate = new Date();
+		this.rootStore.fetchData();
 	}
 }
 

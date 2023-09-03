@@ -1,7 +1,6 @@
 import Wallet from "./stores/models/Wallet";
 
 type Nullable<T> = null | T;
-type Undefindable<T> = undefined | T;
 type TransModal = Nullable<"newTrans">;
 type TransPopout = Nullable<"selectCat">;
 type LoginView = "reg" | "login";
