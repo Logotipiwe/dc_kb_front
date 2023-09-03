@@ -28,7 +28,7 @@ class App extends React.Component<{ RootStore?: RootStore }, {}> {
 
 	render(): React.ReactElement {
 		const RootStore = this.props.RootStore!;
-		const {UIStore} = RootStore;
+		const {uiStore} = RootStore;
 
 		if (!RootStore.dataLoaded) return <ScreenSpinner/>;
 		if (!RootStore.auth) return <Login/>;
@@ -50,7 +50,7 @@ class App extends React.Component<{ RootStore?: RootStore }, {}> {
 				tabbarTitle: "Транзакции",
 				tabbarIcon: <Icon28ListAddOutline/>,
 				view: <Transactions id={'transactions'} key={'transactions'}/>,
-				condition: (RootStore.WalletStore.wallets.length)
+				condition: (RootStore.walletStore.wallets.length)
 			},
 			analytics: {
 				tabbarTitle: "Аналитика",
@@ -67,15 +67,15 @@ class App extends React.Component<{ RootStore?: RootStore }, {}> {
 		};
 
 		return (
-			<Epic activeStory={UIStore.activeStory} tabbar={
+			<Epic activeStory={uiStore.activeStory} tabbar={
 				<Tabbar>
 					{Object.keys(screens).map(screenTitle => {
 						const screen = screens[screenTitle];
 						if (!screen.condition) return null;
 						return <TabbarItem
 							key={screenTitle}
-							onClick={UIStore.onStoryChange}
-							selected={UIStore.activeStory === screenTitle}
+							onClick={uiStore.onStoryChange}
+							selected={uiStore.activeStory === screenTitle}
 							data-story={screenTitle}
 							text={screen.tabbarTitle}
 						>{screen.tabbarIcon || ''}</TabbarItem>

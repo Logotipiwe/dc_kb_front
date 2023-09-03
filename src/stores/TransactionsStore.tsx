@@ -24,7 +24,7 @@ class TransactionsStore {
 
     get categoriesToShow(): ICategory[] {
         let categories = Object.values(this.categories);
-        const transactionsUI = this.RootStore.UIStore.TransactionsUI;
+        const transactionsUI = this.RootStore.uiStore.transactionsUI;
         if(transactionsUI.selectedCategory !== null){
 			const subcats = transactionsUI.selectedCatSubcats;
 			if(subcats.length) {
@@ -36,14 +36,14 @@ class TransactionsStore {
 
 	get availableTypes(){
 		return this.types.filter(type=>{
-			return !(this.RootStore.WalletStore.wallets.length < 2 && type.id===2)
+			return !(this.RootStore.walletStore.wallets.length < 2 && type.id===2)
 		})
 	}
 
 	 newTrans() {
-		const UIStore = this.RootStore.UIStore;
-		const TransactionsUI = UIStore.TransactionsUI;
-		const wallet = TransactionsUI.selectedWallet || this.RootStore.WalletStore.wallets[0];
+		const UIStore = this.RootStore.uiStore;
+		const TransactionsUI = UIStore.transactionsUI;
+		const wallet = TransactionsUI.selectedWallet || this.RootStore.walletStore.wallets[0];
 		let type;
 		const value = Math.abs(TransactionsUI.transactionValue);
 		if (TransactionsUI.selectedTransValueType === "transValue") {

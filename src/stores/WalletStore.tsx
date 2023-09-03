@@ -21,12 +21,12 @@ export default class WalletStore {
 	}
 
 	 get availableToWallets(){
-		return this.wallets.filter(wallet=>(wallet !== this.RootStore.UIStore.TransactionsUI.selectedWallet))
+		return this.wallets.filter(wallet=>(wallet !== this.RootStore.uiStore.transactionsUI.selectedWallet))
 	}
 
 	 get walletsNotSelectedInNewPeriod(){
 		return this.wallets.filter(w=>
-			!this.RootStore.UIStore.WalletsUI.newPeriodWallets.some(p=>p.wallet === w)
+			!this.RootStore.uiStore.walletsUI.newPeriodWallets.some(p=>p.wallet === w)
 		)
 	}
 
@@ -53,7 +53,7 @@ export default class WalletStore {
 				if(res.ok){
 					this.RootStore.fetchData();
 				}
-				this.RootStore.UIStore.WalletsUI.setActiveModal(null);
+				this.RootStore.uiStore.walletsUI.setActiveModal(null);
 			});
 	}
 }

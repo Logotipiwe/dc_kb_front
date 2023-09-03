@@ -41,19 +41,19 @@ import {WalletSelect} from "./components/WalletSelect";
 class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key: any }, any> {
 
 	componentDidMount(): void {
-		const {TransactionsUI} = this.props.RootStore!.UIStore;
-		const {wallets} = this.props.RootStore!.WalletStore;
-		if (TransactionsUI.selectedWallet === null) {
-			TransactionsUI.selectedWallet = wallets[0];
+		const {transactionsUI} = this.props.RootStore!.uiStore;
+		const {wallets} = this.props.RootStore!.walletStore;
+		if (transactionsUI.selectedWallet === null) {
+			transactionsUI.selectedWallet = wallets[0];
 		}
 	}
 
 	render() {
 		const RootStore = this.props.RootStore!;
-		const {TransactionsUI: transactionsUI} = RootStore.UIStore;
-		const {TransactionsStore: transactionsStore} = RootStore;
+		const {transactionsUI: transactionsUI} = RootStore.uiStore;
+		const {transactionsStore: transactionsStore} = RootStore;
 		const {categories, transactions} = transactionsStore;
-		const {availableToWallets} = RootStore.WalletStore;
+		const {availableToWallets} = RootStore.walletStore;
 		const currentBalance = Object.values(RootStore.balances!)[0];
 
 		const categoriesToShow = transactionsStore.categoriesToShow;
@@ -212,7 +212,7 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 				      header={false}>
 					<Panel id='1'>
 						<PanelHeader title='Транзакции'/>
-						<PullToRefresh onRefresh={RootStore.UIStore.refreshPage} isFetching={RootStore.isFetching}>
+						<PullToRefresh onRefresh={RootStore.uiStore.refreshPage} isFetching={RootStore.isFetching}>
 							{transactions ? transactions.map(trans => {
 								const type = transactionsStore.getType(trans.type);
 								return (

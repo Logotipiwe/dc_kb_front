@@ -15,23 +15,23 @@ class UIStore {
 		autoBind(this)
 		this.rootStore = rootStore;
 
-		this.HomeUI = new HomeUI(this);
-		this.TransactionsUI = new TransactionsUI(this);
-		this.WalletsUI = new WalletsUI(this);
-		this.AnalyticsUI = new AnalyticsUI(this);
+		this.homeUI = new HomeUI(this);
+		this.transactionsUI = new TransactionsUI(this);
+		this.walletsUI = new WalletsUI(this);
+		this.analyticsUI = new AnalyticsUI(this);
 
 		//после остальных UI
-		this.LoginUI = new LoginUI(this);
+		this.loginUI = new LoginUI(this);
 	}
 
 	isDev: boolean = process.env.NODE_ENV === "development";
 
 	rootStore: RootStore;
-	HomeUI: HomeUI;
-	WalletsUI: WalletsUI;
-	TransactionsUI: TransactionsUI;
-	AnalyticsUI: AnalyticsUI;
-	LoginUI: LoginUI;
+	homeUI: HomeUI;
+	walletsUI: WalletsUI;
+	transactionsUI: TransactionsUI;
+	analyticsUI: AnalyticsUI;
+	loginUI: LoginUI;
 
 	activeStory: ActiveStories = this.isDev ? "wallets" : 'home';
 

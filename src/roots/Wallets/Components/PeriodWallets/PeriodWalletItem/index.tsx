@@ -23,14 +23,14 @@ class PeriodWalletItem extends React.Component<{
 
     render() {
         const RootStore = this.props.RootStore!;
-        const {WalletStore} = RootStore;
+        const {walletStore} = RootStore;
         const {item, walletsToSelect, delNewPeriodWallet} = this.props;
         return (
             <Div style={{display: "flex", flexDirection: "column"}}>
                 <div style={{display: "flex", flexGrow: 1}}>
                     <Select
                         style={{flexGrow: 1}}
-                        onChange={e => this.props.changeWallet(item, WalletStore.getWallet(parseInt(e.target.value)))}
+                        onChange={e => this.props.changeWallet(item, walletStore.getWallet(parseInt(e.target.value)))}
                         value={item.wallet.id}
                     >
                         <option disabled value="null">Выбрать счёт</option>

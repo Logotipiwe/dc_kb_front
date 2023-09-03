@@ -10,25 +10,25 @@ import RootStore from './stores/RootStore';
 class Login extends React.Component<{RootStore?: RootStore},{}>{
 
 	render() {
-		const {LoginUI} = this.props.RootStore!.UIStore;
+		const {loginUI} = this.props.RootStore!.uiStore;
 
 		return (
-			<Root activeView={LoginUI.activeView}>
+			<Root activeView={loginUI.activeView}>
 				<View id='login' activePanel='1' header={false}>
 					<Panel id='1'>
 						<FormLayout>
 							<Input top={'Логин'}
-							       value={LoginUI.inputLogin}
-							       onChange={LoginUI.setInputLogin}
+							       value={loginUI.inputLogin}
+							       onChange={loginUI.setInputLogin}
 							/>
 							<Input top={'Пароль'}
 								   type="password"
-							       value={LoginUI.inputPassword}
-							       onChange={LoginUI.setInputPassword}
+							       value={loginUI.inputPassword}
+							       onChange={loginUI.setInputPassword}
 							/>
-							<Button size="xl" mode="primary" onClick={LoginUI.submitLogin}>Войти</Button>
+							<Button size="xl" mode="primary" onClick={loginUI.submitLogin}>Войти</Button>
 							<Div style={{textAlign: 'center'}}>
-								Ещё не зарегистрированы? <Link onClick={LoginUI.setActiveView.bind(null,'reg')}>Вам сюда</Link>
+								Ещё не зарегистрированы? <Link onClick={loginUI.setActiveView.bind(null,'reg')}>Вам сюда</Link>
 							</Div>
 						</FormLayout>
 					</Panel>
@@ -36,17 +36,17 @@ class Login extends React.Component<{RootStore?: RootStore},{}>{
 				<View id='reg' activePanel='1' header={false}>
 					<Panel id='1'>
 						<FormLayout>
-							<Input top={'Логин'} value={LoginUI.inputLoginReg}
-							       onChange={LoginUI.setInputLoginReg}/>
-							<Input top={'Пароль'} value={LoginUI.inputPasswordReg} type="password"
-							       onChange={LoginUI.setInputPasswordReg}
+							<Input top={'Логин'} value={loginUI.inputLoginReg}
+							       onChange={loginUI.setInputLoginReg}/>
+							<Input top={'Пароль'} value={loginUI.inputPasswordReg} type="password"
+								   onChange={loginUI.setInputPasswordReg}
 							/>
-							<Button size="xl" mode="primary" onClick={LoginUI.submitReg}>Зарегистрироваться</Button>
+							<Button size="xl" mode="primary" onClick={loginUI.submitReg}>Зарегистрироваться</Button>
 							<FormStatus mode={"error"}>
 								<p style={{fontSize: 16, margin: 0}}>Пользователь с таким логином уже зарегистирован</p>
 							</FormStatus>
 							<Div style={{textAlign: 'center'}}>
-								Уже зарегистрированы? <Link onClick={LoginUI.setActiveView.bind(null,'login')}>Вам сюда</Link>
+								Уже зарегистрированы? <Link onClick={loginUI.setActiveView.bind(null,'login')}>Вам сюда</Link>
 							</Div>
 						</FormLayout>
 					</Panel>

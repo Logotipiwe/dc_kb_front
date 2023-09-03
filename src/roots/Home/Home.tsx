@@ -20,17 +20,17 @@ import RootStore from "../../stores/RootStore";
 class Home extends React.Component<{ RootStore?: RootStore, key: any, id: any }, {}> {
 	render() {
 		const RootStore = this.props.RootStore!;
-		const {appData, UIStore} = RootStore;
+		const {appData, uiStore} = RootStore;
 
 		const analytics = appData.analytics;
 		const balances = RootStore.balances;
-		const wallets = RootStore.WalletStore.wallets;
+		const wallets = RootStore.walletStore.wallets;
 		return (
 			<Root activeView='1'>
 				<View id='1' activePanel={'1'} header={false}>
 					<Panel id='1'>
 						<PanelHeader title='Главная'/>
-						<PullToRefresh onRefresh={UIStore.refreshPage} isFetching={RootStore.isFetching}>
+						<PullToRefresh onRefresh={uiStore.refreshPage} isFetching={RootStore.isFetching}>
 							{(analytics && balances) ?
 								<Group separator="show" header={<Header mode="primary">Аналитика</Header>}>
 									{!RootStore.isAllBalancesNull && <CardGrid>

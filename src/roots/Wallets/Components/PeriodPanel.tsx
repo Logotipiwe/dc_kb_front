@@ -12,13 +12,13 @@ import {IPeriodWallet} from "../../../global";
 class PeriodPanel extends React.Component<{ RootStore?: RootStore }, any> {
 	render() {
 		const RootStore = this.props.RootStore!;
-		const {UIStore: {WalletsUI}} = RootStore;
+		const {uiStore: {walletsUI}} = RootStore;
 
 		const header = (<PanelHeaderSimple
 			left={
 				<Icon28ArrowLeftOutline
 					onClick={() => {
-						WalletsUI.setActivePanel('1');
+						walletsUI.setActivePanel('1');
 						periodSel?.syncUI();
 					}}
 					style={{marginLeft: 10}}
@@ -28,16 +28,16 @@ class PeriodPanel extends React.Component<{ RootStore?: RootStore }, any> {
 			Период
 		</PanelHeaderSimple>);
 
-		if (!WalletsUI.periodSelected) return (
+		if (!walletsUI.periodSelected) return (
 			<>
 				{header}
 				<Cell>Период не выбран</Cell>
 			</>
 		);
 
-		const periodSel = WalletsUI.periodSelected!;
+		const periodSel = walletsUI.periodSelected!;
 
-		const unselectedWallets = RootStore.WalletStore.wallets.filter(w =>
+		const unselectedWallets = RootStore.walletStore.wallets.filter(w =>
 			periodSel.UI.walletsInited.every((wi: IPeriodWallet) => wi.wallet !== w)
 		);
 
@@ -74,13 +74,13 @@ class PeriodPanel extends React.Component<{ RootStore?: RootStore }, any> {
 					</FormLayoutGroup>
 
 					<Button
-						onClick={WalletsUI.periodEdit.bind(null, periodSel)}
+						onClick={walletsUI.periodEdit.bind(null, periodSel)}
 						mode="commerce"
 						size='xl'
 					>
 						Сохранить
 					</Button>
-					<Button mode='secondary' onClick={WalletsUI.setIsDeletingPeriod.bind(null, true)}>Удалить период</Button>
+					<Button mode='secondary' onClick={walletsUI.setIsDeletingPeriod.bind(null, true)}>Удалить период</Button>
 				</FormLayout>
 			</>
 		);

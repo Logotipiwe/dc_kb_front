@@ -8,22 +8,22 @@ import {inject, observer} from "mobx-react/dist";
 export class ValueInput extends React.Component<{RootStore?: RootStore}, any> {
     render() {
         const rootStore = this.props.RootStore!;
-        const {TransactionsStore} = rootStore;
-        const {TransactionsUI} = rootStore.UIStore;
+        const {transactionsStore} = rootStore;
+        const {transactionsUI} = rootStore.uiStore;
 
-        const transValType = TransactionsUI.selectedTransValueType;
+        const transValType = transactionsUI.selectedTransValueType;
         const valueFieldTitle = (transValType === 'transValue') ? 'Сумма' : "Сумма на счету";
 
         return <Input
             bottom={
-                (transValType === "walletValue" && TransactionsUI.inputValue !== null)
-                    ? (TransactionsStore.getType(TransactionsUI.selectedType).title + ": " + Math.abs(TransactionsUI.transactionValue))
+                (transValType === "walletValue" && transactionsUI.inputValue !== null)
+                    ? (transactionsStore.getType(transactionsUI.selectedType).title + ": " + Math.abs(transactionsUI.transactionValue))
                     : null
             }
             placeholder={valueFieldTitle + '...'}
             inputMode="numeric"
-            onChange={TransactionsUI.changeInputValue}
-            value={(TransactionsUI.inputValue === null) ? '' : TransactionsUI.inputValue}
+            onChange={transactionsUI.changeInputValue}
+            value={(transactionsUI.inputValue === null) ? '' : transactionsUI.inputValue}
         />
     }
 }

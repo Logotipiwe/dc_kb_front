@@ -21,16 +21,16 @@ class RootStore {
 		makeAutoObservable(this)
 		autoBind(this)
 
-		this.WalletStore = new WalletStore(this);
-		this.TransactionsStore = new TransactionsStore(this);
-		this.UIStore = new UIStore(this);
-		this.PeriodStore = new PeriodStore(this);
+		this.walletStore = new WalletStore(this);
+		this.transactionsStore = new TransactionsStore(this);
+		this.uiStore = new UIStore(this);
+		this.periodStore = new PeriodStore(this);
 	}
 
-	WalletStore: WalletStore;
-	TransactionsStore: TransactionsStore;
-	UIStore: UIStore;
-	PeriodStore: PeriodStore;
+	walletStore: WalletStore;
+	transactionsStore: TransactionsStore;
+	uiStore: UIStore;
+	periodStore: PeriodStore;
 
 	isDev: boolean = process.env.NODE_ENV === "development";
 
@@ -106,31 +106,31 @@ class RootStore {
 
 					this.balances = ans.balances;
 
-						this.WalletStore.wallets = ans.wallets.map((wallet) => {
-							const foundWallet = this.WalletStore.getWallet(wallet.id);
+						this.walletStore.wallets = ans.wallets.map((wallet) => {
+							const foundWallet = this.walletStore.getWallet(wallet.id);
 							if(foundWallet){
 								foundWallet.copy(wallet);
 								return foundWallet;
 							}
 							return new Wallet(wallet);
 						});
-						this.TransactionsStore.transactions = ans.transactions;
-						this.TransactionsStore.categories = ans.categories;
-						this.TransactionsStore.types = ans.transaction_types;
+						this.transactionsStore.transactions = ans.transactions;
+						this.transactionsStore.categories = ans.categories;
+						this.transactionsStore.types = ans.transaction_types;
 
-					if(this.WalletStore.wallets.length) {
-						this.UIStore.TransactionsUI.selectedWallet = this.WalletStore.wallets[0];
+					if(this.walletStore.wallets.length) {
+						this.uiStore.transactionsUI.selectedWallet = this.walletStore.wallets[0];
 					}
-					if (ans.wallets.length > 1) this.UIStore.TransactionsUI.selectedToWallet = ans.wallets[1].id;
+					if (ans.wallets.length > 1) this.uiStore.transactionsUI.selectedToWallet = ans.wallets[1].id;
 
-					this.PeriodStore.periods = ans.periods.map((p)=>{
+					this.periodStore.periods = ans.periods.map((p)=>{
 						const period: IPeriod = {
 							id: p.id,
 							startDate: new Date(p.start_date),
 							endDate: new Date(p.end_date),
 							initStore: p.init_store,
 							walletsInited: p.wallets_inited.map(item=>{return {
-								wallet: this.WalletStore.getWallet(item.id),
+								wallet: this.walletStore.getWallet(item.id),
 								sum: item.sum,
 								isAddToBalance: Boolean(item.is_add_to_balance)
 							}})

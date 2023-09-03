@@ -31,7 +31,7 @@ export default class TransactionsUI {
 	hideErrTimeout: Nullable<typeof setTimeout.prototype> = null;
 
 	selectTransValueType(newVal: TransValueTypes) {
-		this.selectedType = this.UIStore.rootStore.TransactionsStore.types[0].id;
+		this.selectedType = this.UIStore.rootStore.transactionsStore.types[0].id;
 		this.selectedTransValueType = newVal;
 	}
 
@@ -48,7 +48,7 @@ export default class TransactionsUI {
 
 	get transactionValue() { //значение которое будет записано в транзакцию
 		if (this.selectedTransValueType === "transValue") return (this.inputValue || 0);
-		const wallet = this.selectedWallet || this.UIStore.rootStore.WalletStore.wallets[0];
+		const wallet = this.selectedWallet || this.UIStore.rootStore.walletStore.wallets[0];
 		return (wallet && wallet.value)
 			? (this.inputValue || 0) - wallet.value
 			: 0;
@@ -60,7 +60,7 @@ export default class TransactionsUI {
 			return (this.selectedType === 1) ? -(this.inputValue || 0) : (this.inputValue || 0);
 		}
 
-		const wallet = this.selectedWallet || this.UIStore.rootStore.WalletStore.wallets[0];
+		const wallet = this.selectedWallet || this.UIStore.rootStore.walletStore.wallets[0];
 		return (wallet && wallet.value)
 			? (this.inputValue || 0) - wallet.value
 			: 0;
@@ -69,13 +69,13 @@ export default class TransactionsUI {
 	get selectedCatSubcats(): ICategory[]{
 		const selected = this.selectedCategory;
 		if(!selected) return [];
-		return Object.values(this.UIStore.rootStore.TransactionsStore.categories).filter(c => c.parent === selected.id);
+		return Object.values(this.UIStore.rootStore.transactionsStore.categories).filter(c => c.parent === selected.id);
 	}
 
 	changeType(e: any) {
 		let id = parseInt(e.target.value);
 		if (id === 2) {
-			this.selectedToWallet = this.UIStore.rootStore.WalletStore.wallets[1].id;
+			this.selectedToWallet = this.UIStore.rootStore.walletStore.wallets[1].id;
 		} else {
 			this.selectedToWallet = null;
 		}
@@ -84,12 +84,12 @@ export default class TransactionsUI {
 	};
 
 	changeWalletId = (e: any) => {
-		const {WalletStore} = this.UIStore.rootStore;
+		const {walletStore} = this.UIStore.rootStore;
 		const val = parseInt(e.target.value);
 
-		this.selectedWallet = WalletStore.getWallet(val);
+		this.selectedWallet = walletStore.getWallet(val);
 		if (val === this.selectedToWallet) {
-			this.selectedToWallet = WalletStore.availableToWallets[0].id;
+			this.selectedToWallet = walletStore.availableToWallets[0].id;
 		}
 	};
 
@@ -116,7 +116,7 @@ export default class TransactionsUI {
 		if(this.selectedCategory?.id === category_id){
 			this.selectedCategory = undefined;
 		} else {
-			this.selectedCategory = category_id ? this.UIStore.rootStore.TransactionsStore.categories[category_id] : undefined;
+			this.selectedCategory = category_id ? this.UIStore.rootStore.transactionsStore.categories[category_id] : undefined;
 		}
 		if(!this.selectedCatSubcats.length){
 			this.setPopout(null);
@@ -128,7 +128,7 @@ export default class TransactionsUI {
 	}
 
 	get isShowingRootCats(): boolean{
-		const categories = Object.values(this.UIStore.rootStore.TransactionsStore.categories);
+		const categories = Object.values(this.UIStore.rootStore.transactionsStore.categories);
 		let selectedCat = this.selectedCategory;
 		if(!selectedCat) {
 			return true;
@@ -154,7 +154,7 @@ export default class TransactionsUI {
 	setDefaults() {
 		this.activeModal = null;
 		this.inputValue = null;
-		this.selectedWallet = this.UIStore.rootStore.WalletStore.wallets[0];
+		this.selectedWallet = this.UIStore.rootStore.walletStore.wallets[0];
 		this.selectedToWallet = null;
 		this.selectedType = 1;
 		this.selectedCategory = undefined;

@@ -25,23 +25,17 @@ class WalletsUI {
 
     isDev = process.env.NODE_ENV === "development"
 
-    activeModal: Nullable<WalletPageModals> = (this.isDev) ? null : null;
+    activeModal: Nullable<WalletPageModals> = null;
     inputWalletTitle: string = '';
     deletingWallet: Nullable<IWallet> = null;
     showErr = false;
 
-    activePanel: WalletsActivePanels = (this.isDev) ? "1" : "1";
+    activePanel: WalletsActivePanels = "1";
     periodSelected?: Period;
     isDeletingPeriod: boolean = (this.isDev) ? false : false;
 
-    newPeriodStartDate?: string = (this.isDev)
-        // ? '2020-09-19'
-        ? undefined
-        : undefined;
-    newPeriodEndDate?: string = (this.isDev)
-        // ? '2020-09-23'
-        ? undefined
-        : undefined;
+    newPeriodStartDate?: string;
+    newPeriodEndDate?: string;
 
     newPeriodInitStore: number = 0;
 
@@ -68,12 +62,12 @@ class WalletsUI {
 
 
     get newPeriodSelectedWallets(): Array<Wallet> {
-        const {WalletStore: WalletsStore} = this.UIStore.rootStore;
+        const {walletStore: WalletsStore} = this.UIStore.rootStore;
         return WalletsStore.wallets.filter(w => this.newPeriodWallets.map(pw => pw.wallet).includes(w));
     }
 
     get newPeriodUnselectedWallets(): Wallet[] {
-        const {WalletStore: WalletsStore} = this.UIStore.rootStore;
+        const {walletStore: WalletsStore} = this.UIStore.rootStore;
         return WalletsStore.wallets.filter(w => !this.newPeriodSelectedWallets.includes(w))
     }
 
@@ -160,17 +154,17 @@ class WalletsUI {
     }
 
     setNewPeriodFullMonth() {
-        const {WalletsUI, rootStore} = this.UIStore;
+        const {walletsUI, rootStore} = this.UIStore;
         const currMonth = rootStore.currDate.getMonth();
         const startDate = new Date(rootStore.currDate.getFullYear(), currMonth, 1);
         const endDate = new Date(rootStore.currDate.getFullYear(), currMonth + 1, 0);
 
-        WalletsUI.newPeriodStartDate = [
+        walletsUI.newPeriodStartDate = [
             startDate.getFullYear(),
             (startDate.getMonth() + 1).toString().padStart(2, '0'),
             (startDate.getDate()).toString().padStart(2, '0')
         ].join('-');
-        WalletsUI.newPeriodEndDate = [
+        walletsUI.newPeriodEndDate = [
             endDate.getFullYear(),
             (endDate.getMonth() + 1).toString().padStart(2, '0'),
             endDate.getDate().toString().padStart(2, '0')
@@ -209,7 +203,7 @@ class WalletsUI {
     }
 
     periodClick(id: number) {
-        this.periodSelected = this.UIStore.rootStore.PeriodStore.getPeriod(id);
+        this.periodSelected = this.UIStore.rootStore.periodStore.getPeriod(id);
         this.activePanel = "period";
     }
 
