@@ -22,7 +22,7 @@ class Analytics extends React.Component<{ RootStore?: RootStore, key: any, id: a
     render() {
         const RootStore = this.props.RootStore!;
         const {appData} = RootStore;
-        const analytics: IAnalyticsResponse = appData.analytics;
+        const analytics: IAnalyticsResponse = appData!.analytics;
         const currPeriod: Period|null = RootStore.periodStore.currPeriod;
         const initStored: number = currPeriod ? currPeriod.initStore : 0;
 

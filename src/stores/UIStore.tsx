@@ -33,7 +33,7 @@ class UIStore {
 	analyticsUI: AnalyticsUI;
 	loginUI: LoginUI;
 
-	activeStory: ActiveStories = this.isDev ? "wallets" : 'home';
+	activeStory: ActiveStories = this.isDev ? "home" : 'home';
 
 	onStoryChange = (e: any) => {
 		this.activeStory = e.currentTarget.dataset.story;

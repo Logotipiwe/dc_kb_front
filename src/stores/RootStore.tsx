@@ -6,7 +6,7 @@ import React from "react";
 import {Period} from "./models/Period";
 import PeriodStore from "./PeriodStore";
 import Wallet from "./models/Wallet";
-import {IGetDataResponse, IPeriod} from "../global";
+import {IGetData, IGetDataAnsResponse, IGetDataResponse, IPeriod} from "../global";
 import autoBind from "../utils/autoBind";
 
 //TODO tags
@@ -37,7 +37,7 @@ class RootStore {
 	url = this.isDev ?
 		'http://localhost/kb_back_service/api.php' :
 		'../kb_back_service/api.php';
-	appData: any = {};
+	appData?: IGetData;
 	balances: Record<string, number> | undefined;
 	auth = true;
 	currDate = this.isDev ? new Date() : new Date();
@@ -46,8 +46,28 @@ class RootStore {
 	isNormalFetchTimePassed: boolean = true;
 	normalFetchTime: number = 500;
 
-	setAppData(appData: object) {
-		this.appData = appData;
+	setAppData(appData: IGetDataAnsResponse){
+
+		this.appData = {
+			...appData,
+			limit_balances: this.processLimitBalances(appData.limit_balances)
+		};
+	}
+
+	processLimitBalances(limit_balances: Record<string, Record<string, number> | null>) {
+		const res: Record<string, Record<string, number>> = {}
+		Object.entries(limit_balances).forEach(limitBalance=>{
+			const date = limitBalance[0];
+			if(limitBalance[1]) {
+				Object.entries(limitBalance[1]).forEach(categoryToAmount=>{
+					const categoryId = categoryToAmount[0]
+					const amount = categoryToAmount[1]
+					if(!res[categoryId]) res[categoryId] = {}
+					res[categoryId]![date] = amount
+				})
+			}
+		})
+		return res;
 	}
 
 	objToGet = (get_data: any): string => {
@@ -254,9 +274,11 @@ class RootStore {
 		return -dateDiff + ' назад'
 	}; //человекочитаемая разница в днях
 
-	getColor = (val: number) => {
-		if (Math.abs(val) > 1000) val = 1000 * Math.sign(val);
-		val = val / 1000;
+	getColor = (val: number, perDay: number) => {
+		const borderValue = perDay*2
+		val=val+perDay; //move to make it more green at 0
+		if (Math.abs(val) > borderValue) val = borderValue * Math.sign(val);
+		val = val / borderValue;
 		let red = 0;
 		let green = 0;
 		const initGreen = 210;

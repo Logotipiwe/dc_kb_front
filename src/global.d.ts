@@ -111,12 +111,17 @@ interface IGetDataAnsResponse {
 	categories: Record<any, ICategory>,
 	transactions: any,
 	balances: Record<string, number>,
+	limit_balances: Record<string, Record<string, number>|null >
 	wallets: IWallet[]
 	transaction_types: ITransactionType[],
 	periods: IPeriodRes[],
 	// curr_period: IPeriodRes,
 	user_id: number,
 	analytics: IAnalyticsResponse,
+}
+
+interface IGetData extends IGetDataAnsResponse {
+	limit_balances: Record<string, Record<string, number> >
 }
 
 interface IAnalyticsResponse {

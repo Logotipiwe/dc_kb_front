@@ -181,22 +181,28 @@ class WalletsUI {
         const end_date = this.newPeriodEndDate;
         const init_store = this.newPeriodInitStore || 0;
 
-        const get: any = {
-            start_date, end_date, init_store, method: 'period_new'
-        };
-        this.validNewPeriodWallets.forEach(item => {
-            const walletKey = "wallets[" + item.wallet!.id + "]";
-            get[walletKey] = JSON.stringify({sum: item.sum, is_add_to_balance: item.isAddToBalance})
-        });
-
         if (!start_date || !end_date) return this.showFromErr();
 
-        this.UIStore.rootStore.doAjax(get).then(res => res.json()).then(res => {
-            if (!res.ok) return this.showFromErr();
+        const getParams: any = {method: 'period_new'};
+        const body: any = {
+            startDate: start_date,
+            endDate: end_date,
+            initStore: init_store,
+            periodWallets: this.validNewPeriodWallets.map(item=>({
+                sum: item.sum,
+                isAddToBalance: item.isAddToBalance,
+                walletId: item.wallet!.id
+            })),
+            limits: this.validLimits.map(l=>({categoryId: l.category.id, amount: l.amount}))
+        }
 
-            this.setActiveModal(null);
-            this.UIStore.rootStore.fetchData();
-        });
+        this.UIStore.rootStore.doAjax(getParams, {method: "POST", body: JSON.stringify(body)})
+            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) return this.showFromErr();
+                this.setActiveModal(null);
+                this.UIStore.rootStore.fetchData();
+            });
     }
     periodClick(id: number) {
         this.periodSelected = this.UIStore.rootStore.periodStore.getPeriod(id);
@@ -259,10 +265,18 @@ class WalletsUI {
             this.limitToSelectCategoryFor.category = category;
         }
     }
+
+    get validLimits(): ValidLimit[] {
+        return this.newLimits.filter(l=> l.category && l.amount) as ValidLimit[]
+    }
 }
 
 export interface NewLimit {
     category?: ICategory
+    amount: number
+}
+export interface ValidLimit {
+    category: ICategory
     amount: number
 }
 
