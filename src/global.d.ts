@@ -57,6 +57,8 @@ interface IPeriodWalletFieldProp<T> {
 	onChange: (x: T)=>void
 }
 
+
+
 interface IType {
 	id: number,
 	title: string,

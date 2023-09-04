@@ -51,7 +51,7 @@ class RootStore {
 	}
 
 	objToGet = (get_data: any): string => {
-		let getArr = [];
+		let getArr: string[] = [];
 		let get = "";
 		if (Object.keys(get_data).length) {
 			for (let key in get_data) {

@@ -35,6 +35,7 @@ import {ValueInput} from "./components/ValueInput";
 import FormField from "@vkontakte/vkui/dist/components/FormField/FormField";
 import {TypeSelect} from "./components/TypeSelect";
 import {WalletSelect} from "./components/WalletSelect";
+import CategoriesPanel from "./components/CategoriesPanel";
 
 @inject('RootStore')
 @observer
@@ -50,18 +51,11 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 
 	render() {
 		const RootStore = this.props.RootStore!;
-		const {transactionsUI: transactionsUI} = RootStore.uiStore;
-		const {transactionsStore: transactionsStore} = RootStore;
+		const {transactionsUI} = RootStore.uiStore;
+		const {transactionsStore} = RootStore;
 		const {categories, transactions} = transactionsStore;
 		const {availableToWallets} = RootStore.walletStore;
 		const currentBalance = Object.values(RootStore.balances!)[0];
-
-		const categoriesToShow = transactionsStore.categoriesToShow;
-
-		const chunkSize = 4;
-		const categoriesChunked = categoriesToShow.map((x, i) => categoriesToShow
-			.slice(i * chunkSize, i * chunkSize + chunkSize))
-			.filter(arr => arr.length);
 
 		const transValType = transactionsUI.selectedTransValueType;
 		const valueFieldTitle = (transValType === 'transValue') ? 'Сумма' : "Сумма на счету";
@@ -158,52 +152,12 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 				</ModalPage>
 			</ModalRoot>
 		);
-		const popout = (transactionsUI.popout == null) ? null : (
-			<Panel>
-				<PanelHeaderSimple>Выбор категории</PanelHeaderSimple>
-				<Group>
-					<Header
-						onClick={transactionsUI.setPopout.bind(null, null)} aside={<Icon24Cancel/>} style={{margin: '15 0'}}
-					>Назад</Header>
-					{transactionsUI.isShowingRootCats ? null
-						: <Button
-							size={'l'}
-							style={{width: "calc(100% - 20px)", margin: "10px"}}
-							onClick={transactionsUI.setPopout.bind(null, null)}
-						>Без подкатегории</Button>}
-
-					{categoriesChunked.map((chunk, i) =>
-						<CardGrid key={i}>
-							{chunk.map(category => {
-								const category_id = category.id;
-								return <Card
-									className={"category_card_outer"}
-									key={category_id}
-									size={'s'}
-									style={transactionsUI.selectedCategory?.id === category_id ? {backgroundColor: "var(--tabbar_tablet_active_icon)"} : {}}
-									onClick={transactionsUI.selectCat.bind(null, category_id)}
-								>
-									<div className="category_card">
-										<div className="img" style={{backgroundColor: category.color}}>
-											<img src={category.img} alt='.'/>
-										</div>
-										{category.title}
-									</div>
-								</Card>
-
-							})}
-						</CardGrid>
-					)}
-					{
-						(transactionsUI.transactionDiff < 0 && transactionsUI.isShowingRootCats)
-						&& <Checkbox
-							checked={transactionsUI.isUnnecessary}
-							onChange={transactionsUI.changeIsUnnecessary}
-						>Необязательный</Checkbox>
-					}
-				</Group>
-			</Panel>
-		);
+		const popout = (transactionsUI.popout == null)
+			? null : <CategoriesPanel
+				categories={transactionsStore.categoriesToShow}
+				onClose={transactionsUI.setPopout.bind(null, null)}
+				onSelect={cat => transactionsUI.selectCat(cat)}
+			/>;
 
 		return (
 			<Root activeView='1'>

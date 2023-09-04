@@ -20,6 +20,8 @@ import NewWalletModal from "./Components/NewWalletModal";
 import DelWalletModal from "./Components/DelWalletModal";
 import NewPeriodModal from "./Components/NewPeriodModal";
 import PeriodPanel from "./Components/PeriodPanel";
+import CategoriesPanel from "../Transactions/components/CategoriesPanel";
+import transactionsStore from "../../stores/TransactionsStore";
 
 @inject("RootStore")
 @observer
@@ -36,7 +38,7 @@ class Wallets extends React.Component<{ RootStore?: RootStore, key: any, id: any
 
 	render() {
 		const RootStore = this.props.RootStore!;
-		const {uiStore, periodStore} = RootStore;
+		const {uiStore, periodStore, transactionsStore} = RootStore;
 		const {walletsUI} = uiStore;
 
 		const wallets = RootStore.walletStore.wallets;
@@ -65,8 +67,9 @@ class Wallets extends React.Component<{ RootStore?: RootStore, key: any, id: any
 		);
 
 		const periodSel = walletsUI.periodSelected;
-		const popout = (periodSel !== undefined && walletsUI.isDeletingPeriod) ? (
-			<Alert
+		let popout;
+		if(periodSel !== undefined && walletsUI.isDeletingPeriod){
+			popout = <Alert
 				actionsLayout="vertical"
 				actions={[{
 					title: 'Удалить период',
@@ -83,7 +86,14 @@ class Wallets extends React.Component<{ RootStore?: RootStore, key: any, id: any
 				<h2>Удалить период
 					с {RootStore.dateHuman(periodSel!.startDate)} по {RootStore.dateHuman(periodSel!.endDate)}?</h2>
 			</Alert>
-		) : null;
+		} else if(walletsUI.limitToSelectCategoryFor){
+			popout = <CategoriesPanel
+				categories={transactionsStore.outcomeCategories}
+				selectedCategory={walletsUI.limitToSelectCategoryFor.category}
+				onSelect={walletsUI.selectCategoryForLimit}
+				onClose={walletsUI.setLimitForSelectCategory.bind(null, undefined)}
+			/>
+		}
 
 		const canCreatePeriod: boolean = Boolean(RootStore.walletStore.wallets.length);
 
@@ -118,7 +128,6 @@ class Wallets extends React.Component<{ RootStore?: RootStore, key: any, id: any
 										<Card mode={(currPeriod && period.id === currPeriod.id) ? 'outline' : 'tint'}>
 											<Div>{RootStore.dateHuman(period.startDate)} - {RootStore.dateHuman(period.endDate)}</Div>
 											{period.walletsInited.map((w) => {
-												console.log(w);
 												return <Div
 													key={w.wallet.id}
 												>

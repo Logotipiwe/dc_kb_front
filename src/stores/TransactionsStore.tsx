@@ -34,6 +34,10 @@ class TransactionsStore {
         return categories.filter(category => category.types.includes(transactionsUI.selectedType));
     };
 
+	get outcomeCategories(): ICategory[] {
+		return Object.values(this.categories).filter(c=>c.types.includes(1) || c.types.includes(5))
+	}
+
 	get availableTypes(){
 		return this.types.filter(type=>{
 			return !(this.RootStore.walletStore.wallets.length < 2 && type.id===2)

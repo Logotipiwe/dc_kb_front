@@ -7,6 +7,8 @@ import React from "react";
 import {inject, observer} from "mobx-react/dist";
 import FormStatus from "@vkontakte/vkui/dist/components/FormStatus/FormStatus";
 import PeriodWallets from "./PeriodWallets";
+import {NewLimit} from "../../../stores/UIStore/WalletsUI";
+import NewLimitItem from "./NewPeriodModal/NewLimitItem";
 
 @inject("RootStore")
 @observer
@@ -53,6 +55,12 @@ class NewPeriodModal extends React.Component<any, any> {
                                        unselectedWallets={walletsUI.newPeriodUnselectedWallets}/>
 
                     </FormLayoutGroup>
+                    <FormLayoutGroup top="Лимиты">
+                        {walletsUI.newLimits.map((l: NewLimit)=>{
+                            return <NewLimitItem limit={l}/>
+                        })}
+                        <Button onClick={walletsUI.addNewLimit}>+ лимит</Button>
+                    </FormLayoutGroup>
                     <FormLayoutGroup
                         top='Начальные накопления'
                         bottom={"Начальные накопления вычтутся из начальной суммы периода и отложатся для крупных ежемесячных расходов, вы можете их оформить указав тип транзакции 'Вложение'"}
@@ -72,11 +80,11 @@ class NewPeriodModal extends React.Component<any, any> {
                         <InfoRow header="Всего в периоде">{walletsUI.newPeriodWalletsSum} p</InfoRow>
                         <InfoRow header="В день">{walletsUI.newPeriodPerDay}</InfoRow>
                     </Cell>
-                    <FormStatus mode={"error"}>
-                        <p style={{fontSize: 17, margin: 0}}>
-                            Невозможно создать период, пересекающийся с уже существующим
-                        </p>
-                    </FormStatus>
+                    {/*<FormStatus mode={"error"}>*/}
+                    {/*    <p style={{fontSize: 17, margin: 0}}>*/}
+                    {/*        Невозможно создать период, пересекающийся с уже существующим*/}
+                    {/*    </p>*/}
+                    {/*</FormStatus>*/}
                     <Button
                         size="xl"
                         mode="commerce"

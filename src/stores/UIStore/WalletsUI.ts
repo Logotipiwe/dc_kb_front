@@ -4,6 +4,7 @@ import {ChangeEvent} from "react";
 import {Period} from "../models/Period";
 import Wallet from "../models/Wallet";
 import {
+    ICategory,
     INewPeriodWallet,
     IPeriodWallet,
     IWallet,
@@ -40,6 +41,8 @@ class WalletsUI {
     newPeriodInitStore: number = 0;
 
     newPeriodWallets: IPeriodWallet[] = [];
+    newLimits: NewLimit[] = [{amount: 1}];
+    limitToSelectCategoryFor?: NewLimit;
 
     static get defaultNewPeriodWalletsObj(): INewPeriodWallet {
         return {
@@ -59,25 +62,20 @@ class WalletsUI {
 
         return selectedSum + unselectedSum;
     }
-
-
     get newPeriodSelectedWallets(): Array<Wallet> {
         const {walletStore: WalletsStore} = this.UIStore.rootStore;
         return WalletsStore.wallets.filter(w => this.newPeriodWallets.map(pw => pw.wallet).includes(w));
     }
-
     get newPeriodUnselectedWallets(): Wallet[] {
         const {walletStore: WalletsStore} = this.UIStore.rootStore;
         return WalletsStore.wallets.filter(w => !this.newPeriodSelectedWallets.includes(w))
     }
-
     get newPeriodMinAvailableDate(): string {
         if (!this.newPeriodStartDate) return '2020-01-01';
         const date = new Date(this.newPeriodStartDate);
         const minDate = new Date(date.getTime() + 1000 * 3600 * 24);
         return this.UIStore.rootStore.dateStr(minDate);
     }
-
     get newPeriodMaxAvailableDate(): string {
         if (!this.newPeriodEndDate) return '2040-01-01';
         const date = new Date(this.newPeriodEndDate);
@@ -85,25 +83,32 @@ class WalletsUI {
         return this.UIStore.rootStore.dateStr(minDate);
     }
 
-    get newPeriodPerDay(): number | undefined {
-        const sum = this.newPeriodWalletsSum;
+    get daysCount(): number|undefined {
         if (!this.newPeriodStartDate || !this.newPeriodEndDate) return undefined;
         const start = new Date(this.newPeriodStartDate);
         const end = new Date(this.newPeriodEndDate);
         if (isNaN(start.getTime()) || isNaN(end.getTime())) return undefined;
         const daysCount = (end.getTime() - start.getTime()) / (1000 * 3600 * 24) + 1;
-        if (daysCount < 1) return undefined;
-        return Math.round((sum - this.newPeriodInitStore) / daysCount);
+        return daysCount;
     }
 
+    get newPeriodPerDay(): number | undefined {
+        const sum = this.newPeriodWalletsSum;
+        const daysCount = this.daysCount
+        if (!daysCount || daysCount < 1) return undefined;
+        return Math.round((sum - this.newPeriodInitStore - this.limitsSum) / daysCount);
+    }
+    get limitsSum(): number {
+        let sum = 0;
+        this.newLimits.forEach(l=> sum+=l.amount);
+        return sum;
+    }
     setIsDeletingPeriod(val: boolean) {
         this.isDeletingPeriod = val;
     }
-
     setNewPeriodInitStore(val: number) {
         this.newPeriodInitStore = val || 0;
     }
-
     periodEdit(period: Period) {
         const RootStore = this.UIStore.rootStore;
         const data: any = {
@@ -124,7 +129,6 @@ class WalletsUI {
             }
         })
     }
-
     periodDelete(period: Period) {
         const get = {
             method: 'period_del',
@@ -137,22 +141,18 @@ class WalletsUI {
             }
         })
     }
-
     onNewPeriodModalClose() {
         // this.newPeriodWallets = WalletsUI.defaultNewPeriodWalletsObj;
         this.setActiveModal(null);
     }
-
     setActivePanel(id: WalletsActivePanels) {
         this.activePanel = id;
     }
-
     get validNewPeriodWallets() {
         return this.newPeriodWallets.filter(item =>
             item.wallet && !isNaN(item.sum)
         )
     }
-
     setNewPeriodFullMonth() {
         const {walletsUI, rootStore} = this.UIStore;
         const currMonth = rootStore.currDate.getMonth();
@@ -170,15 +170,12 @@ class WalletsUI {
             endDate.getDate().toString().padStart(2, '0')
         ].join('-');
     }
-
     inputNewPeriodStartDate(e: ChangeEvent<HTMLInputElement>) {
         this.newPeriodStartDate = e.target.value;
     }
-
     inputNewPeriodEndDate(e: ChangeEvent<HTMLInputElement>) {
         this.newPeriodEndDate = e.target.value;
     }
-
     newPeriod() {
         const start_date = this.newPeriodStartDate;
         const end_date = this.newPeriodEndDate;
@@ -201,34 +198,27 @@ class WalletsUI {
             this.UIStore.rootStore.fetchData();
         });
     }
-
     periodClick(id: number) {
         this.periodSelected = this.UIStore.rootStore.periodStore.getPeriod(id);
         this.activePanel = "period";
     }
-
     hideErrTimeout: Nullable<typeof setTimeout.prototype> = null;
-
     setActiveModal(val: Nullable<WalletPageModals>): void {
         this.activeModal = val;
     };
-
     showDelWalletConfirmation(wallet: IWallet) {
         this.deletingWallet = wallet;
         this.setActiveModal("delWallet");
     }
-
     changeInputWalletTitle(e: any): void {
         this.inputWalletTitle = e.target.value;
     };
-
     showFromErr() {
         this.showErr = true;
         this.hideErrTimeout = setTimeout(() => {
             this.showErr = false;
         }, 3000);
     }
-
     newWallet(): Promise<any> {
         const title = this.inputWalletTitle;
         const get = {
@@ -249,6 +239,31 @@ class WalletsUI {
                 }
             })
     };
+
+    addNewLimit(){
+        this.newLimits.push({amount: 0})
+    }
+
+    removeNewLimit(limit: NewLimit){
+        this.newLimits.splice(this.newLimits.indexOf(limit), 1);
+    }
+
+    setLimitForSelectCategory(limit?: NewLimit){
+        this.limitToSelectCategoryFor = limit
+    }
+
+    selectCategoryForLimit(category?: ICategory){
+        console.log("a", category)
+        if (this.limitToSelectCategoryFor) {
+            console.log("b", this.limitToSelectCategoryFor)
+            this.limitToSelectCategoryFor.category = category;
+        }
+    }
+}
+
+export interface NewLimit {
+    category?: ICategory
+    amount: number
 }
 
 export default WalletsUI;

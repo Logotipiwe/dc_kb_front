@@ -112,28 +112,20 @@ export default class TransactionsUI {
 		this.selectedToWallet = parseInt(e.target.value);
 	};
 
-	selectCat(category_id?: number) {
-		if(this.selectedCategory?.id === category_id){
-			this.selectedCategory = undefined;
-		} else {
-			this.selectedCategory = category_id ? this.UIStore.rootStore.transactionsStore.categories[category_id] : undefined;
-		}
-		if(!this.selectedCatSubcats.length){
-			this.setPopout(null);
-		}
+	selectCat(cat?: ICategory) {
+		this.selectedCategory = cat
+		// if(this.selectedCategory?.id === category_id){
+		// 	this.selectedCategory = undefined;
+		// } else {
+		// 	this.selectedCategory = category_id ? this.UIStore.rootStore.transactionsStore.categories[category_id] : undefined;
+		// }
+		// if(!this.selectedCatSubcats.length){
+		// 	this.setPopout(null);
+		// }
 	}
 
 	setPopout(val: TransPopout){
 		this.popout = val;
-	}
-
-	get isShowingRootCats(): boolean{
-		const categories = Object.values(this.UIStore.rootStore.transactionsStore.categories);
-		let selectedCat = this.selectedCategory;
-		if(!selectedCat) {
-			return true;
-		}
-		return !categories.some(c=>c.parent === selectedCat!.id);
 	}
 
 	setActiveModal(val: TransModal) {
