@@ -62,10 +62,12 @@ class PeriodWallets extends React.Component<props, state> {
 
 	selectPeriodWallet(item: IPeriodWallet, wallet: Wallet) {
 		item.wallet = wallet;
+		this.setState(this.state)
 	}
 
 	changePeriodWalletValue(item: IPeriodWallet, sum: number) {
 		item.sum = sum;
+		this.setState(this.state)
 	}
 
 	delNewPeriodWallet(periodWallet: IPeriodWallet) {
@@ -74,10 +76,12 @@ class PeriodWallets extends React.Component<props, state> {
 		propWallets.splice(pos,1);
 
 		this.props.updateModalHeight!();
+		this.setState(this.state)
 	}
 
 	changePeriodWalletIsAddToBalance(periodWallet: IPeriodWallet, val: boolean){
 		periodWallet.isAddToBalance = val;
+		this.setState(this.state)
 	}
 
 	render() {
@@ -94,6 +98,7 @@ class PeriodWallets extends React.Component<props, state> {
 						item={item}
 						changeWallet={this.selectPeriodWallet}
 						changeValue={this.changePeriodWalletValue}
+						onChangeValue={val=>this.changePeriodWalletValue(item, val)}
 						changeIsAddToBalance={this.changePeriodWalletIsAddToBalance}
 						walletsToSelect={walletsToSelect}
 						delNewPeriodWallet={this.delNewPeriodWallet}

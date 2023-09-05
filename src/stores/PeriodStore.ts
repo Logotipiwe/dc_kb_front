@@ -1,15 +1,18 @@
 import RootStore from "./RootStore";
-import {computed, makeAutoObservable, observable} from "mobx";
+import {computed, makeAutoObservable, observable, toJS} from "mobx";
 import {Period} from "./models/Period";
 import autoBind from "../utils/autoBind";
-import {Limit} from "../global";
+import {INewPeriodWallet, IPeriodWallet, Limit, Nullable} from "../global";
+import Wallet from "./models/Wallet";
+import WalletsUI from "./UIStore/WalletsUI";
+import React, {RefObject} from "react";
 
 
 export default class PeriodStore {
-	constructor(RootStore: RootStore) {
+	constructor(rootStore: RootStore) {
 		makeAutoObservable(this)
 		autoBind(this)
-		this.RootStore = RootStore;
+		this.RootStore = rootStore;
 	}
 
 	RootStore: RootStore;

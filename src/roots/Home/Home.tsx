@@ -14,6 +14,7 @@ import PanelHeader from "../../PanelHeader";
 import {inject, observer} from "mobx-react/dist";
 import RootStore from "../../stores/RootStore";
 import {imgSrc} from "../../utils/functions";
+import Balance from "./components/Balance";
 
 @inject("RootStore")
 @observer
@@ -37,51 +38,11 @@ class Home extends React.Component<{ RootStore?: RootStore, key: any, id: any },
 								<Group separator="show" header={<Header mode="primary">Аналитика</Header>}>
 									{!rootStore.isAllBalancesNull
                                         && <>
-                                            <CardGrid>
-                                                {Object.keys(balances).map(date => {
-                                                    const balance = balances[date];
-                                                    return <Card size='s' key={date}>
-                                                        <div style={{height: 76}}>
-                                                            {(balance !== null) &&
-                                                                <>
-                                                                    <div
-                                                                        style={{textAlign: 'center'}}>{rootStore.dateDiffHuman(date)}</div>
-                                                                    <div style={{
-                                                                        color: rootStore.getColor(balance, analytics.per_day),
-                                                                        textAlign: 'center',
-                                                                        paddingTop: 20,
-                                                                        fontSize: 27
-                                                                    }}>{balance} P
-                                                                    </div>
-                                                                </>
-                                                            }
-                                                        </div>
-                                                    </Card>
-                                                })}
-                                            </CardGrid>
+                                            <Balance balance={balances}/>
 											{Object.entries(periodBalances).map(periodBalance=> {
 												const categoryId = parseInt(periodBalance[0])
 												const category = rootStore.transactionsStore.categories[categoryId]
-												return <CardGrid>
-													<Card size="l" style={{padding: "8px 10px", boxSizing: "border-box"}}>
-														<div style={{display: "flex", justifyContent: "space-between"}}>
-														<span style={{display: "flex", alignItems: "center", fontSize: 17}}>
-															<img src={imgSrc(category.img)} height={20} width={20}
-																 style={{borderRadius: '50%', backgroundColor: category.color,
-																 padding: 4}}/>
-															{category.title}:
-														</span>
-															<div style={{display: "flex", flexBasis: "50%", justifyContent: "space-between", fontSize: 20}}>
-																{Object.values(periodBalance[1]).map(amount=>{
-																	return <span style={{
-																		color: rootStore.getColor(amount, 1000),
-																		marginRight: 10
-																	}}>{amount}</span>
-																})}
-															</div>
-														</div>
-													</Card>
-												</CardGrid>
+												return <Balance balance={periodBalance[1]} category={category}/>
 											})}
                                         </>}
                                     {(analytics.per_day !== null) && <Cell indicator={analytics.per_day + ' P'}>В день: </Cell>}

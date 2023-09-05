@@ -197,7 +197,7 @@ class WalletsUI {
             startDate: start_date,
             endDate: end_date,
             initStore: init_store,
-            periodWallets: this.validNewPeriodWallets.map(item=>({
+            wallets: this.validNewPeriodWallets.map(item=>({
                 sum: item.sum,
                 isAddToBalance: item.isAddToBalance,
                 walletId: item.wallet!.id

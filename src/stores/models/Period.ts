@@ -1,9 +1,11 @@
-import {action, computed, observable} from "mobx";
+import {action, computed, makeAutoObservable, observable} from "mobx";
 import {ChangeEvent} from "react";
 import {IPeriod, IPeriodUI, IPeriodWallet} from "../../global";
+import autoBind from "../../utils/autoBind";
 
 export class Period {
 	constructor(period: IPeriod) {
+		makeAutoObservable(this)
 		this.id = period.id;
 		this.startDate = period.startDate;
 		this.endDate = period.endDate;
@@ -15,17 +17,22 @@ export class Period {
 			endDate: period.endDate,
 			walletsInited: period.walletsInited
 		}
+
+		this.setInitStore = this.setInitStore.bind(this);
+		this.syncUI = this.syncUI.bind(this);
+		this.setStartDate = this.setStartDate.bind(this);
+		this.setEndDate = this.setEndDate.bind(this);
 	}
 
-	@observable id: number;
-	@observable startDate: Date;
-	@observable endDate: Date;
-	@observable walletsInited: IPeriodWallet[] = [];
-	@observable initStore: number;
+	id: number;
+	startDate: Date;
+	endDate: Date;
+	walletsInited: IPeriodWallet[] = [];
+	initStore: number;
 
-	@observable UI: IPeriodUI;
+	UI: IPeriodUI;
 
-	@action.bound syncUI(){
+	syncUI(){
 		this.UI = {
 			initStore: this.initStore,
 			startDate: this.startDate,
@@ -34,19 +41,19 @@ export class Period {
 		}
 	}
 
-	@action.bound setStartDate(e: ChangeEvent<HTMLInputElement>){
+	setStartDate(e: ChangeEvent<HTMLInputElement>){
 		this.UI.startDate = new Date(e.target.value);
 	}
 
-	@action.bound setEndDate(e: ChangeEvent<HTMLInputElement>){
+	setEndDate(e: ChangeEvent<HTMLInputElement>){
 		this.UI.endDate = new Date(e.target.value);
 	}
 
-	@action.bound setInitStore(e: ChangeEvent<HTMLInputElement>){
+	setInitStore(e: ChangeEvent<HTMLInputElement>){
 		this.UI.initStore = parseInt(e.target.value) || 0;
 	}
 
-	@computed get validNewPeriodWallets() {
+	get validNewPeriodWallets() {
 		return this.UI.walletsInited.filter(item =>
 			item.wallet && !isNaN(item.sum)
 		)
