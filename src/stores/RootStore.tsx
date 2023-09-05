@@ -6,7 +6,7 @@ import React from "react";
 import {Period} from "./models/Period";
 import PeriodStore from "./PeriodStore";
 import Wallet from "./models/Wallet";
-import {IGetData, IGetDataAnsResponse, IGetDataResponse, IPeriod} from "../global";
+import {IGetData, IGetDataAnsResponse, IGetDataResponse, IPeriod, Limit} from "../global";
 import autoBind from "../utils/autoBind";
 
 //TODO tags
@@ -126,17 +126,21 @@ class RootStore {
 
 					this.balances = ans.balances;
 
-						this.walletStore.wallets = ans.wallets.map((wallet) => {
-							const foundWallet = this.walletStore.getWallet(wallet.id);
-							if(foundWallet){
-								foundWallet.copy(wallet);
-								return foundWallet;
-							}
-							return new Wallet(wallet);
-						});
-						this.transactionsStore.transactions = ans.transactions;
-						this.transactionsStore.categories = ans.categories;
-						this.transactionsStore.types = ans.transaction_types;
+					this.walletStore.wallets = ans.wallets.map((wallet) => {
+						const foundWallet = this.walletStore.getWallet(wallet.id);
+						if(foundWallet){
+							foundWallet.copy(wallet);
+							return foundWallet;
+						}
+						return new Wallet(wallet);
+					});
+					this.transactionsStore.transactions = ans.transactions;
+					this.transactionsStore.categories = ans.categories;
+					this.transactionsStore.types = ans.transaction_types;
+
+					const limits: Limit[] = ans.all_limits.map(l=> ({...l, category: ans.categories[l.category_id]}))
+					this.periodStore.limits = limits;
+					this.uiStore.walletsUI.refreshLimitsUi();
 
 					if(this.walletStore.wallets.length) {
 						this.uiStore.transactionsUI.selectedWallet = this.walletStore.wallets[0];
@@ -160,8 +164,18 @@ class RootStore {
 
 					this.dataLoaded = true;
 					this.auth = true;
+
+					if(this.isDev){
+						const walletsUI = this.uiStore.walletsUI;
+						// setTimeout(()=>walletsUI.periodClick(134),500)
+						// walletsUI.activeModal = "newPeriod"
+						// walletsUI.newPeriodStartDate = '2023-10-01'
+						// walletsUI.newPeriodEndDate = '2023-10-30'
+						// walletsUI.periodSelected = this.periodStore.getPeriod(134)
+					}
 				}
-			}).finally(() => {
+			})
+			.finally(() => {
 			this.isFetchingProp = false
 		});
 	};

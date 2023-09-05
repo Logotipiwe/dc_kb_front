@@ -36,6 +36,8 @@ import FormField from "@vkontakte/vkui/dist/components/FormField/FormField";
 import {TypeSelect} from "./components/TypeSelect";
 import {WalletSelect} from "./components/WalletSelect";
 import CategoriesPanel from "./components/CategoriesPanel";
+import rootStore from "../../stores/RootStore";
+import Popouts from "../../components/Popouts";
 
 @inject('RootStore')
 @observer
@@ -50,12 +52,13 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 	}
 
 	render() {
-		const RootStore = this.props.RootStore!;
-		const {transactionsUI} = RootStore.uiStore;
-		const {transactionsStore} = RootStore;
+		const rootStore = this.props.RootStore!;
+		let uiStore = rootStore.uiStore;
+		const {transactionsUI} = uiStore;
+		const {transactionsStore} = rootStore;
 		const {categories, transactions} = transactionsStore;
-		const {availableToWallets} = RootStore.walletStore;
-		const currentBalance = Object.values(RootStore.balances!)[0];
+		const {availableToWallets} = rootStore.walletStore;
+		const currentBalance = Object.values(rootStore.balances!)[0];
 
 		const transValType = transactionsUI.selectedTransValueType;
 		const valueFieldTitle = (transValType === 'transValue') ? 'Сумма' : "Сумма на счету";
@@ -63,6 +66,12 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 			backgroundColor: 'var(--accent)',
 			color: 'white'
 		};
+
+		const onSelectCategoryClick = e=>uiStore.popoutsUi.openSelectCategoryPopup(
+			rootStore.transactionsStore.categoriesToShow,
+			transactionsUI.selectedCategory,
+			transactionsUI.selectCat
+		);
 
 		const modal = (
 			<ModalRoot activeModal={(transactionsUI.activeModal)}>
@@ -140,10 +149,10 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 						{(transactionsStore.categoriesToShow.length || transactionsUI.selectedCategory) && <SelectMimicry
 							top={'Категория'}
 							placeholder={!transactionsUI.selectedCategory ? 'выбрать...' : transactionsUI.selectedCategory.title}
-							onClick={transactionsUI.openCatSelectPopout}
+							onClick={onSelectCategoryClick}
 						/>}
-						<Button size="xl" mode="commerce" disabled={RootStore.isFetching} onClick={transactionsStore.newTrans}>
-							{(RootStore.isFetching)
+						<Button size="xl" mode="commerce" disabled={rootStore.isFetching} onClick={transactionsStore.newTrans}>
+							{(rootStore.isFetching)
 								? <Spinner size="small"/>
 								: "Добавить транзакцию"
 							}
@@ -152,28 +161,22 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 				</ModalPage>
 			</ModalRoot>
 		);
-		const popout = (transactionsUI.popout == null)
-			? null : <CategoriesPanel
-				categories={transactionsStore.categoriesToShow}
-				onClose={transactionsUI.setPopout.bind(null, null)}
-				onSelect={cat => transactionsUI.selectCat(cat)}
-			/>;
 
 		return (
 			<Root activeView='1'>
 
-				<View id='1' activePanel='1' popout={popout} modal={modal}
+				<View id='1' activePanel='1' popout={uiStore.popoutsUi.isShowing() && <Popouts/>} modal={modal}
 				      header={false}>
 					<Panel id='1'>
 						<PanelHeader title='Транзакции'/>
-						<PullToRefresh onRefresh={RootStore.uiStore.refreshPage} isFetching={RootStore.isFetching}>
+						<PullToRefresh onRefresh={uiStore.refreshPage} isFetching={rootStore.isFetching}>
 							{transactions ? transactions.map(trans => {
 								const type = transactionsStore.getType(trans.type);
 								return (
 									<Cell
 										key={trans.id}
 										removable
-										onRemove={RootStore.delTransaction.bind(null, trans.id)}
+										onRemove={rootStore.delTransaction.bind(null, trans.id)}
 										indicator={trans.title + (trans.to_title ? ('->' + trans.to_title) : '')}
 										description={type.title + ((trans.category !== null) ? ' на ' + categories[trans.category].title.toLowerCase() : '') + (trans.is_unnecessary ? ' (необяз.)' : '')}
 									>{trans.value} P</Cell>

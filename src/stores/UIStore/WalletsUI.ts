@@ -7,7 +7,7 @@ import {
     ICategory,
     INewPeriodWallet,
     IPeriodWallet,
-    IWallet,
+    IWallet, Limit, LimitDto,
     Nullable,
     WalletPageModals,
     WalletsActivePanels
@@ -41,8 +41,10 @@ class WalletsUI {
     newPeriodInitStore: number = 0;
 
     newPeriodWallets: IPeriodWallet[] = [];
-    newLimits: NewLimit[] = [{amount: 1}];
+    newLimits: NewLimit[] = [];
     limitToSelectCategoryFor?: NewLimit;
+
+    limitsUi: Limit[] = [];
 
     static get defaultNewPeriodWalletsObj(): INewPeriodWallet {
         return {
@@ -109,6 +111,11 @@ class WalletsUI {
     setNewPeriodInitStore(val: number) {
         this.newPeriodInitStore = val || 0;
     }
+
+    get limitsToUpdate(): NewLimitDto[]{
+        return this.limitsUi.map(l=>({category_id: l.category.id, amount: l.amount}))
+    }
+
     periodEdit(period: Period) {
         const RootStore = this.UIStore.rootStore;
         const data: any = {
@@ -117,7 +124,9 @@ class WalletsUI {
             init_store: period.UI.initStore,
             start_date: RootStore.dateStr(period.UI.startDate),
             end_date: RootStore.dateStr(period.UI.endDate),
-            wallets: period.validNewPeriodWallets.map(i=>({id: i.wallet.id, sum: i.sum, is_add_to_balance: i.isAddToBalance ? 1 : 0}))
+            wallets: period.validNewPeriodWallets.map(i=>(
+                {id: i.wallet.id, sum: i.sum, is_add_to_balance: i.isAddToBalance ? 1 : 0})),
+            limits: this.limitsToUpdate
         };
         this.UIStore.rootStore.doAjax({}, {
             method: "POST",
@@ -259,9 +268,7 @@ class WalletsUI {
     }
 
     selectCategoryForLimit(category?: ICategory){
-        console.log("a", category)
         if (this.limitToSelectCategoryFor) {
-            console.log("b", this.limitToSelectCategoryFor)
             this.limitToSelectCategoryFor.category = category;
         }
     }
@@ -269,10 +276,23 @@ class WalletsUI {
     get validLimits(): ValidLimit[] {
         return this.newLimits.filter(l=> l.category && l.amount) as ValidLimit[]
     }
-}
 
-export interface NewLimit {
+    openCategorySelector(categoriesToShow: ICategory[], onSelect: (category?: ICategory) => void) {
+        return undefined;
+    }
+
+    refreshLimitsUi() {
+        const limits: Limit[] = this.UIStore.rootStore.periodStore.limits;
+        this.limitsUi = limits.map(l=>Object.assign({},l))
+    }
+}
+export interface LimitUi {
     category?: ICategory
+    amount: number
+}
+export interface NewLimit extends LimitUi {}
+export interface NewLimitDto {
+    category_id: number
     amount: number
 }
 export interface ValidLimit {

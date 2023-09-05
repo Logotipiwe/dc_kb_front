@@ -25,12 +25,12 @@ class TransactionsStore {
     get categoriesToShow(): ICategory[] {
         let categories = Object.values(this.categories);
         const transactionsUI = this.RootStore.uiStore.transactionsUI;
-        if(transactionsUI.selectedCategory !== null){
-			const subcats = transactionsUI.selectedCatSubcats;
-			if(subcats.length) {
-				return subcats;
-			}
-        }
+        // if(transactionsUI.selectedCategory !== null){
+		// 	const subcats = transactionsUI.selectedCatSubcats;
+		// 	if(subcats.length) {
+		// 		return subcats;
+		// 	}
+        // }
         return categories.filter(category => category.types.includes(transactionsUI.selectedType));
     };
 

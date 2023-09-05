@@ -66,7 +66,7 @@ class Home extends React.Component<{ RootStore?: RootStore, key: any, id: any },
 													<Card size="l" style={{padding: "8px 10px", boxSizing: "border-box"}}>
 														<div style={{display: "flex", justifyContent: "space-between"}}>
 														<span style={{display: "flex", alignItems: "center", fontSize: 17}}>
-															<img src={imgSrc(category.img)} height={20}
+															<img src={imgSrc(category.img)} height={20} width={20}
 																 style={{borderRadius: '50%', backgroundColor: category.color,
 																 padding: 4}}/>
 															{category.title}:

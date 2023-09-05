@@ -2,6 +2,7 @@ import {action, computed, makeAutoObservable, observable} from "mobx";
 import RootStore from "./RootStore";
 import Wallet from "./models/Wallet";
 import autoBind from "../utils/autoBind";
+import {Limit} from "../global";
 
 export default class WalletStore {
 	constructor(RootStore : RootStore) {

@@ -22,6 +22,7 @@ import NewPeriodModal from "./Components/NewPeriodModal";
 import PeriodPanel from "./Components/PeriodPanel";
 import CategoriesPanel from "../Transactions/components/CategoriesPanel";
 import transactionsStore from "../../stores/TransactionsStore";
+import Popouts from "../../components/Popouts";
 
 @inject("RootStore")
 @observer
@@ -30,9 +31,10 @@ class Wallets extends React.Component<{ RootStore?: RootStore, key: any, id: any
 		if (process.env.NODE_ENV === "development") {
 			const RootStore = this.props.RootStore!;
 			const walletsUI = RootStore.uiStore.walletsUI;
-			walletsUI.activeModal = "newPeriod"
-			walletsUI.newPeriodStartDate = '2023-09-01'
-			walletsUI.newPeriodEndDate = '2023-09-30'
+			// walletsUI.activeModal = "newPeriod"
+			// walletsUI.newPeriodStartDate = '2023-09-01'
+			// walletsUI.newPeriodEndDate = '2023-09-30'
+			// walletsUI.periodSelected = RootStore.periodStore.getPeriod(134)
 		}
 	}
 
@@ -65,41 +67,10 @@ class Wallets extends React.Component<{ RootStore?: RootStore, key: any, id: any
 				/>
 			</ModalRoot>
 		);
-
-		const periodSel = walletsUI.periodSelected;
-		let popout;
-		if(periodSel !== undefined && walletsUI.isDeletingPeriod){
-			popout = <Alert
-				actionsLayout="vertical"
-				actions={[{
-					title: 'Удалить период',
-					autoclose: true,
-					mode: 'destructive',
-					action: walletsUI.periodDelete.bind(null, periodSel),
-				}, {
-					title: 'Отмена',
-					autoclose: true,
-					mode: 'cancel'
-				}]}
-				onClose={walletsUI.setIsDeletingPeriod.bind(null, false)}
-			>
-				<h2>Удалить период
-					с {RootStore.dateHuman(periodSel!.startDate)} по {RootStore.dateHuman(periodSel!.endDate)}?</h2>
-			</Alert>
-		} else if(walletsUI.limitToSelectCategoryFor){
-			popout = <CategoriesPanel
-				categories={transactionsStore.outcomeCategories}
-				selectedCategory={walletsUI.limitToSelectCategoryFor.category}
-				onSelect={walletsUI.selectCategoryForLimit}
-				onClose={walletsUI.setLimitForSelectCategory.bind(null, undefined)}
-			/>
-		}
-
 		const canCreatePeriod: boolean = Boolean(RootStore.walletStore.wallets.length);
-
 		return (
 			<Root activeView='1'>
-				<View id='1' popout={popout} activePanel={walletsUI.activePanel} header={false} modal={modal}>
+				<View id='1' popout={uiStore.popoutsUi.isShowing() && <Popouts/>} activePanel={walletsUI.activePanel} header={false} modal={modal}>
 					<Panel id='1'>
 						<PanelHeader title='Счета'/>
 						<PullToRefresh onRefresh={uiStore.refreshPage} isFetching={RootStore.isFetching}>

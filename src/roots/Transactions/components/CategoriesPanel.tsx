@@ -10,6 +10,7 @@ import {ICategory} from "../../../global";
 import RootStore from "../../../stores/RootStore";
 import autoBind from "../../../utils/autoBind";
 import {observer} from "mobx-react";
+import {imgSrc} from "../../../utils/functions";
 
 
 type props = {
@@ -68,7 +69,6 @@ class CategoriesPanel extends React.Component<props, state>{
     }
 
     onSelect(cat?: ICategory){
-        console.log("selecting cat", cat)
         this.props.onSelect(cat)
         this.props.onClose()
     }
@@ -108,7 +108,7 @@ class CategoriesPanel extends React.Component<props, state>{
                             >
                                 <div className="category_card">
                                     <div className="img" style={{backgroundColor: category.color}}>
-                                        <img src={category.img} alt='.'/>
+                                        <img src={imgSrc(category.img)} alt='.'/>
                                     </div>
                                     {category.title}
                                 </div>

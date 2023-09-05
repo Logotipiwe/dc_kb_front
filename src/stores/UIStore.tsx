@@ -8,6 +8,7 @@ import AnalyticsUI from "./UIStore/AnalyticsUI";
 import {ActiveStories} from "../global";
 import rootStore from "./RootStore";
 import autoBind from "../utils/autoBind";
+import PopoutsUi from "./UIStore/popouts/PopoutsUi";
 
 class UIStore {
 	constructor(rootStore: RootStore) {
@@ -19,6 +20,7 @@ class UIStore {
 		this.transactionsUI = new TransactionsUI(this);
 		this.walletsUI = new WalletsUI(this);
 		this.analyticsUI = new AnalyticsUI(this);
+		this.popoutsUi = new PopoutsUi(this);
 
 		//после остальных UI
 		this.loginUI = new LoginUI(this);
@@ -32,8 +34,9 @@ class UIStore {
 	transactionsUI: TransactionsUI;
 	analyticsUI: AnalyticsUI;
 	loginUI: LoginUI;
+	popoutsUi: PopoutsUi;
 
-	activeStory: ActiveStories = this.isDev ? "home" : 'home';
+	activeStory: ActiveStories = this.isDev ? "wallets" : 'home';
 
 	onStoryChange = (e: any) => {
 		this.activeStory = e.currentTarget.dataset.story;

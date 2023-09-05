@@ -1,7 +1,7 @@
 import {action, computed, makeAutoObservable, observable} from "mobx";
 import UIStore from "../UIStore";
 import Wallet from "../models/Wallet";
-import {ICategory, Nullable, TransModal, TransPopout, TransValueTypes} from "../../global";
+import {ICategory, Nullable, TransModal, TransValueTypes} from "../../global";
 import autoBind from "../../utils/autoBind";
 
 export default class TransactionsUI {
@@ -15,7 +15,6 @@ export default class TransactionsUI {
 
 	isDev: boolean = process.env.NODE_ENV === "development";
 
-	popout: TransPopout = null;
 	activeModal: TransModal = this.isDev ? "newTrans" : null;
 	isShowErr: boolean = false;
 	inputValue: Nullable<number> = this.isDev ? 1500 : null;
@@ -114,27 +113,11 @@ export default class TransactionsUI {
 
 	selectCat(cat?: ICategory) {
 		this.selectedCategory = cat
-		// if(this.selectedCategory?.id === category_id){
-		// 	this.selectedCategory = undefined;
-		// } else {
-		// 	this.selectedCategory = category_id ? this.UIStore.rootStore.transactionsStore.categories[category_id] : undefined;
-		// }
-		// if(!this.selectedCatSubcats.length){
-		// 	this.setPopout(null);
-		// }
-	}
-
-	setPopout(val: TransPopout){
-		this.popout = val;
 	}
 
 	setActiveModal(val: TransModal) {
 		this.activeModal = val;
 	};
-
-	openCatSelectPopout() {
-		this.setPopout('selectCat');
-	}
 
 	storeMoneyLeft(valueLeft: number) {
 		this.setDefaults();

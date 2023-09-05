@@ -8,7 +8,8 @@ import {inject, observer} from "mobx-react/dist";
 import FormStatus from "@vkontakte/vkui/dist/components/FormStatus/FormStatus";
 import PeriodWallets from "./PeriodWallets";
 import {NewLimit} from "../../../stores/UIStore/WalletsUI";
-import NewLimitItem from "./NewPeriodModal/NewLimitItem";
+import NewLimitItem from "./LimitsList/LimitItem";
+import LimitsList from "./LimitsList/LimitsList";
 
 @inject("RootStore")
 @observer
@@ -56,10 +57,7 @@ class NewPeriodModal extends React.Component<any, any> {
 
                     </FormLayoutGroup>
                     <FormLayoutGroup top="Лимиты">
-                        {walletsUI.newLimits.map((l: NewLimit)=>{
-                            return <NewLimitItem limit={l}/>
-                        })}
-                        <Button onClick={walletsUI.addNewLimit}>+ лимит</Button>
+                        <LimitsList list={walletsUI.newLimits}/>
                     </FormLayoutGroup>
                     <FormLayoutGroup
                         top='Начальные накопления'

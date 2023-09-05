@@ -2,7 +2,6 @@ import Wallet from "./stores/models/Wallet";
 
 type Nullable<T> = null | T;
 type TransModal = Nullable<"newTrans">;
-type TransPopout = Nullable<"selectCat">;
 type LoginView = "reg" | "login";
 type ActiveStories = "home" | "transactions" | "menu" | "wallets" | "analytics";
 type WalletPageModals = "newWallet" | "delWallet" | "newPeriod" | "editPeriod" | "delPeriod";
@@ -107,11 +106,20 @@ interface IOutcomeByCategory {
 	color: string
 }
 
+interface LimitDto {
+	id,period_id,category_id,amount: number
+}
+interface Limit {
+	id,period_id,amount: number
+	category: ICategory
+}
+
 interface IGetDataAnsResponse {
 	categories: Record<any, ICategory>,
 	transactions: any,
 	balances: Record<string, number>,
 	limit_balances: Record<string, Record<string, number>|null >
+	all_limits: LimitDto[]
 	wallets: IWallet[]
 	transaction_types: ITransactionType[],
 	periods: IPeriodRes[],
