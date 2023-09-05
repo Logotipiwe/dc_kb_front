@@ -7,86 +7,93 @@ import React from "react";
 import {inject, observer} from "mobx-react/dist";
 import FormStatus from "@vkontakte/vkui/dist/components/FormStatus/FormStatus";
 import PeriodWallets from "./PeriodWallets";
+import {NewLimit} from "../../../stores/UIStore/WalletsUI";
+import NewLimitItem from "./LimitsList/LimitItem";
+import LimitsList from "./LimitsList/LimitsList";
 
 @inject("RootStore")
 @observer
 class NewPeriodModal extends React.Component<any, any> {
-	render() {
-		const RootStore = this.props.RootStore!;
-		const {WalletsUI} = RootStore.UIStore;
-		return (
-			<ModalPage
-				id={'newPeriod'}
-				header={
-					<ModalPageHeader
-						left={<PanelHeaderButton
-							onClick={WalletsUI.onNewPeriodModalClose}><Icon24Cancel/></PanelHeaderButton>}
-					>
-						Новый период
-					</ModalPageHeader>
-				}
-			>
-				<FormLayout>
-					{WalletsUI.showErr && <FormStatus header="Ошибка ввода данных" mode="error">
-						Проверьте правильность полей.
-					</FormStatus>}
-					<FormLayoutGroup
-						top='Даты начала и конца периода'
-					>
-						<Input
-							onChange={WalletsUI.inputNewPeriodStartDate}
-							value={WalletsUI.newPeriodStartDate || ''}
-							type="date"
-							max={WalletsUI.newPeriodMaxAvailableDate}
-						/>
-						<Input
-							onChange={WalletsUI.inputNewPeriodEndDate}
-							value={WalletsUI.newPeriodEndDate || ''}
-							type="date"
-							min={WalletsUI.newPeriodMinAvailableDate}
-						/>
-						<Button onClick={WalletsUI.setNewPeriodFullMonth}>На весь текущий месяц</Button>
-					</FormLayoutGroup>
-					<FormLayoutGroup top='Начальные суммы счетов'>
+    render() {
+        const RootStore = this.props.RootStore!;
+        const walletsUI = RootStore.uiStore.walletsUI;
+        return (
+            <ModalPage
+                id={'newPeriod'}
+                header={
+                    <ModalPageHeader
+                        left={<PanelHeaderButton
+                            onClick={walletsUI.onNewPeriodModalClose}><Icon24Cancel/></PanelHeaderButton>}
+                    >
+                        Новый период
+                    </ModalPageHeader>
+                }
+            >
+                <FormLayout>
+                    {walletsUI.showErr && <FormStatus header="Ошибка ввода данных" mode="error">
+                        Проверьте правильность полей.
+                    </FormStatus>}
+                    <FormLayoutGroup
+                        top='Даты начала и конца периода'
+                    >
+                        <Input
+                            onChange={walletsUI.inputNewPeriodStartDate}
+                            value={walletsUI.newPeriodStartDate || ''}
+                            type="date"
+                            max={walletsUI.newPeriodMaxAvailableDate}
+                        />
+                        <Input
+                            onChange={walletsUI.inputNewPeriodEndDate}
+                            value={walletsUI.newPeriodEndDate || ''}
+                            type="date"
+                            min={walletsUI.newPeriodMinAvailableDate}
+                        />
+                        <Button onClick={walletsUI.setNewPeriodFullMonth}>На весь текущий месяц</Button>
+                    </FormLayoutGroup>
+                    <FormLayoutGroup top='Начальные суммы счетов'>
 
-						<PeriodWallets periodWallets={WalletsUI.newPeriodWallets} unselectedWallets={WalletsUI.newPeriodUnselectedWallets}/>
+                        <PeriodWallets periodWallets={walletsUI.newPeriodWallets}
+                                       unselectedWallets={walletsUI.newPeriodUnselectedWallets}/>
 
-					</FormLayoutGroup>
-					<FormLayoutGroup
-						top='Начальные накопления'
-						bottom={"Начальные накопления вычтутся из начальной суммы периода и отложатся для крупных ежемесячных расходов, вы можете их оформить указав тип транзакции 'Вложение'"}
-					>
-						<Div style={{display: 'flex'}}>
-							<Div style={{display: "flex", flexGrow: 1}}>Накопления</Div>
-							<Input
-								style={{width: 100}}
-								type='numeric'
-								value={WalletsUI.newPeriodInitStore}
-								onChange={e => WalletsUI.setNewPeriodInitStore(parseInt(e.target.value))}
-							/>
-							<div style={{width: 24}}/>
-						</Div>
-					</FormLayoutGroup>
-					<Cell>
-						<InfoRow header="Всего в периоде">{WalletsUI.newPeriodWalletsSum} p</InfoRow>
-						<InfoRow header="В день">{WalletsUI.newPeriodPerDay}</InfoRow>
-					</Cell>
-					<FormStatus mode={"error"}>
-						<p style={{fontSize: 17, margin: 0}}>
-							Невозможно создать период, пересекающийся с уже существующим
-						</p>
-					</FormStatus>
-					<Button
-						size="xl"
-						mode="commerce"
-						onClick={WalletsUI.newPeriod}
-					>
-						Создать период
-					</Button>
-				</FormLayout>
-			</ModalPage>
-		)
-	}
+                    </FormLayoutGroup>
+                    <FormLayoutGroup top="Лимиты">
+                        <LimitsList list={walletsUI.newLimits}/>
+                    </FormLayoutGroup>
+                    <FormLayoutGroup
+                        top='Начальные накопления'
+                        bottom={"Начальные накопления вычтутся из начальной суммы периода и отложатся для крупных ежемесячных расходов, вы можете их оформить указав тип транзакции 'Вложение'"}
+                    >
+                        <Div style={{display: 'flex'}}>
+                            <Div style={{display: "flex", flexGrow: 1}}>Накопления</Div>
+                            <Input
+                                style={{width: 100}}
+                                type='numeric'
+                                value={walletsUI.newPeriodInitStore}
+                                onChange={e => walletsUI.setNewPeriodInitStore(parseInt(e.target.value))}
+                            />
+                            <div style={{width: 24}}/>
+                        </Div>
+                    </FormLayoutGroup>
+                    <Cell>
+                        <InfoRow header="Всего в периоде">{walletsUI.newPeriodWalletsSum} p</InfoRow>
+                        <InfoRow header="В день">{walletsUI.newPeriodPerDay}</InfoRow>
+                    </Cell>
+                    {/*<FormStatus mode={"error"}>*/}
+                    {/*    <p style={{fontSize: 17, margin: 0}}>*/}
+                    {/*        Невозможно создать период, пересекающийся с уже существующим*/}
+                    {/*    </p>*/}
+                    {/*</FormStatus>*/}
+                    <Button
+                        size="xl"
+                        mode="commerce"
+                        onClick={walletsUI.newPeriod}
+                    >
+                        Создать период
+                    </Button>
+                </FormLayout>
+            </ModalPage>
+        )
+    }
 }
 
 export default NewPeriodModal;

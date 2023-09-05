@@ -16,7 +16,7 @@ class Menu extends React.Component<{ RootStore?: RootStore, id: any, key: any },
 				<View id='1' activePanel='1' header={false}>
 					<Panel id='1'>
 						<PanelHeader title='Меню'/>
-						<PullToRefresh onRefresh={RootStore.UIStore.refreshPage} isFetching={RootStore.isFetching}>
+						<PullToRefresh onRefresh={RootStore.uiStore.refreshPage} isFetching={RootStore.isFetching}>
 							<Group header={<Header mode="secondary">Выход</Header>}>
 								<Cell>
 									<div

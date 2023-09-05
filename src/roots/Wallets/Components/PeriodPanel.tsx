@@ -4,22 +4,26 @@ import {Button, Cell, Div, FormLayout, FormLayoutGroup, Header, Input, PanelHead
 import PeriodWallets from "./PeriodWallets";
 import React from "react";
 import {Icon28ArrowLeftOutline} from '@vkontakte/icons';
-import {IPeriodWallet} from "../../../global";
+import {IPeriodWallet, Limit} from "../../../global";
+import {NewLimit} from "../../../stores/UIStore/WalletsUI";
+import NewLimitItem from "./LimitsList/LimitItem";
+import LimitsList from "./LimitsList/LimitsList";
 
 
 @inject("RootStore")
 @observer
 class PeriodPanel extends React.Component<{ RootStore?: RootStore }, any> {
 	render() {
-		const RootStore = this.props.RootStore!;
-		const {UIStore: {WalletsUI}} = RootStore;
+		const rootStore = this.props.RootStore!;
+		const {uiStore: {walletsUI, popoutsUi}} = rootStore;
 
 		const header = (<PanelHeaderSimple
 			left={
 				<Icon28ArrowLeftOutline
 					onClick={() => {
-						WalletsUI.setActivePanel('1');
-						periodSel?.syncUI();
+						walletsUI.setActivePanel('1');
+						period?.syncUI();
+						walletsUI.refreshLimitsUi();
 					}}
 					style={{marginLeft: 10}}
 				/>
@@ -28,35 +32,42 @@ class PeriodPanel extends React.Component<{ RootStore?: RootStore }, any> {
 			Период
 		</PanelHeaderSimple>);
 
-		if (!WalletsUI.periodSelected) return (
+		if (!walletsUI.periodSelected) return (
 			<>
 				{header}
 				<Cell>Период не выбран</Cell>
 			</>
 		);
 
-		const periodSel = WalletsUI.periodSelected!;
+		const period = walletsUI.periodSelected!;
 
-		const unselectedWallets = RootStore.WalletStore.wallets.filter(w =>
-			periodSel.UI.walletsInited.every((wi: IPeriodWallet) => wi.wallet !== w)
+		const unselectedWallets = rootStore.walletStore.wallets.filter(w =>
+			period.UI.walletsInited.every((wi: IPeriodWallet) => wi.wallet !== w)
 		);
 
+		const periodLimits = rootStore.periodStore.getPeriodLimits(period.id)
+
+		let limitsUi = walletsUI.limitsUi;
 		return (
 			<>
 				{header}
 				<FormLayout>
 					<FormLayoutGroup top={<Header mode="secondary">Даты</Header>}>
 						<Input top='Дата начала' type='date'
-						       value={RootStore.dateStr(periodSel.UI.startDate)}
-						       onChange={periodSel.setStartDate}
+						       value={rootStore.dateStr(period.UI.startDate)}
+						       onChange={period.setStartDate}
 						/>
 						<Input top='Дата конца' type='date'
-						       value={RootStore.dateStr(periodSel.UI.endDate)}
-						       onChange={periodSel.setEndDate}
+						       value={rootStore.dateStr(period.UI.endDate)}
+						       onChange={period.setEndDate}
 						/>
 					</FormLayoutGroup>
 					<FormLayoutGroup top={<Header mode="secondary">Счета</Header>}>
-						<PeriodWallets periodWallets={periodSel.UI.walletsInited} unselectedWallets={unselectedWallets}/>
+						<PeriodWallets periodWallets={period.UI.walletsInited} unselectedWallets={unselectedWallets}/>
+					</FormLayoutGroup>
+
+					<FormLayoutGroup top="Лимиты">
+						<LimitsList list={limitsUi}/>
 					</FormLayoutGroup>
 
 					<FormLayoutGroup top='Начальные накопления'
@@ -66,21 +77,21 @@ class PeriodPanel extends React.Component<{ RootStore?: RootStore }, any> {
 							<Input
 								style={{width: 100}}
 								type='numeric'
-								value={periodSel.UI.initStore}
-								onChange={periodSel.setInitStore}
+								value={period.UI.initStore}
+								onChange={period.setInitStore}
 							/>
 							<div style={{width: 24}}/>
 						</Div>
 					</FormLayoutGroup>
 
 					<Button
-						onClick={WalletsUI.periodEdit.bind(null, periodSel)}
+						onClick={walletsUI.periodEdit.bind(null, period)}
 						mode="commerce"
 						size='xl'
 					>
 						Сохранить
 					</Button>
-					<Button mode='secondary' onClick={WalletsUI.setIsDeletingPeriod.bind(null, true)}>Удалить период</Button>
+					<Button mode='secondary' onClick={popoutsUi.setDeletingPeriod.bind(null, period)}>Удалить период</Button>
 				</FormLayout>
 			</>
 		);

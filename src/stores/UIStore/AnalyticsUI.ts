@@ -2,10 +2,12 @@ import UIStore from '../UIStore'
 import {action, observable} from "mobx";
 import Wallet from "../models/Wallet";
 import {ICategory, Nullable} from "../../global";
+import autoBind from "../../utils/autoBind";
 
 export default class AnalyticsUI {
 	constructor(UIStore : UIStore) {
 		this.UIStore = UIStore;
+		autoBind(this)
 	}
 	UIStore : UIStore;
 

@@ -8,17 +8,17 @@ import {inject, observer} from "mobx-react/dist";
 export class TypeSelect extends React.Component<RootStoreProp, any> {
     render() {
         const RootStore = this.props.RootStore!;
-        const {TransactionsUI} = RootStore.UIStore;
-        const {TransactionsStore} = RootStore;
+        const {transactionsUI} = RootStore.uiStore;
+        const {transactionsStore} = RootStore;
 
-        const typesToShow = TransactionsStore.availableTypes;
-        const transValType = TransactionsUI.selectedTransValueType;
+        const typesToShow = transactionsStore.availableTypes;
+        const transValType = transactionsUI.selectedTransValueType;
 
         return <>
             <Select
                 className={"my_form_select"}
-                onChange={TransactionsUI.changeType}
-                value={(TransactionsUI.selectedType !== null) ? TransactionsUI.selectedType : typesToShow[0].id}
+                onChange={transactionsUI.changeType}
+                value={(transactionsUI.selectedType !== null) ? transactionsUI.selectedType : typesToShow[0].id}
             >
                 {typesToShow.map(type =>
                     <option value={type.id} key={type.id}>{type.title}</option>

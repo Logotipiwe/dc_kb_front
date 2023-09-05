@@ -1,4 +1,4 @@
-import {action, computed, observable} from "mobx";
+import {action, computed, makeAutoObservable, observable} from "mobx";
 import WalletStore from './WalletStore'
 import TransactionsStore from "./TransactionsStore"
 import UIStore from "./UIStore";
@@ -6,7 +6,8 @@ import React from "react";
 import {Period} from "./models/Period";
 import PeriodStore from "./PeriodStore";
 import Wallet from "./models/Wallet";
-import {IGetDataResponse, IPeriod} from "../global";
+import {IGetData, IGetDataAnsResponse, IGetDataResponse, IPeriod, Limit} from "../global";
+import autoBind from "../utils/autoBind";
 
 //TODO tags
 //TODO user settings (auto focus transaction value)
@@ -17,35 +18,60 @@ export interface RootStoreProp{
 
 class RootStore {
 	constructor() {
-		this.WalletStore = new WalletStore(this);
-		this.TransactionsStore = new TransactionsStore(this);
-		this.UIStore = new UIStore(this);
-		this.PeriodStore = new PeriodStore(this);
+		makeAutoObservable(this)
+		autoBind(this)
+
+		this.walletStore = new WalletStore(this);
+		this.transactionsStore = new TransactionsStore(this);
+		this.uiStore = new UIStore(this);
+		this.periodStore = new PeriodStore(this);
 	}
 
-	WalletStore: WalletStore;
-	TransactionsStore: TransactionsStore;
-	UIStore: UIStore;
-	PeriodStore: PeriodStore;
+	walletStore: WalletStore;
+	transactionsStore: TransactionsStore;
+	uiStore: UIStore;
+	periodStore: PeriodStore;
 
-	@observable url = (process.env.NODE_ENV === 'development') ?
-		'http://localhost/back/api.php' :
+	isDev: boolean = process.env.NODE_ENV === "development";
+
+	url = this.isDev ?
+		'http://localhost/kb_back_service/api.php' :
 		'../kb_back_service/api.php';
-	@observable appData: any = {};
-	@observable balances: Record<string, number> | undefined;
-	@observable auth = true;
-	@observable currDate = (process.env.NODE_ENV === 'development') ? new Date() : new Date();
-	@observable dataLoaded = false;
-	@observable isFetchingProp: boolean = false;
-	@observable isNormalFetchTimePassed: boolean = true;
+	appData?: IGetData;
+	balances: Record<string, number> | undefined;
+	auth = true;
+	currDate = this.isDev ? new Date() : new Date();
+	dataLoaded = false;
+	isFetchingProp: boolean = false;
+	isNormalFetchTimePassed: boolean = true;
 	normalFetchTime: number = 500;
 
-	setAppData(appData: object) {
-		this.appData = appData;
+	setAppData(appData: IGetDataAnsResponse){
+
+		this.appData = {
+			...appData,
+			limit_balances: this.processLimitBalances(appData.limit_balances)
+		};
+	}
+
+	processLimitBalances(limit_balances: Record<string, Record<string, number> | null>) {
+		const res: Record<string, Record<string, number>> = {}
+		Object.entries(limit_balances).forEach(limitBalance=>{
+			const date = limitBalance[0];
+			if(limitBalance[1]) {
+				Object.entries(limitBalance[1]).forEach(categoryToAmount=>{
+					const categoryId = categoryToAmount[0]
+					const amount = categoryToAmount[1]
+					if(!res[categoryId]) res[categoryId] = {}
+					res[categoryId]![date] = amount
+				})
+			}
+		})
+		return res;
 	}
 
 	objToGet = (get_data: any): string => {
-		let getArr = [];
+		let getArr: string[] = [];
 		let get = "";
 		if (Object.keys(get_data).length) {
 			for (let key in get_data) {
@@ -71,7 +97,7 @@ class RootStore {
 		});
 	};
 
-	@action.bound fetchData() {
+	fetchData() {
 		const date_str = this.getCurrDate;
 		let get = {
 			method: 'data_get',
@@ -100,31 +126,35 @@ class RootStore {
 
 					this.balances = ans.balances;
 
-						this.WalletStore.wallets = ans.wallets.map((wallet) => {
-							const foundWallet = this.WalletStore.getWallet(wallet.id);
-							if(foundWallet){
-								foundWallet.copy(wallet);
-								return foundWallet;
-							}
-							return new Wallet(wallet);
-						});
-						this.TransactionsStore.transactions = ans.transactions;
-						this.TransactionsStore.categories = ans.categories;
-						this.TransactionsStore.types = ans.transaction_types;
+					this.walletStore.wallets = ans.wallets.map((wallet) => {
+						const foundWallet = this.walletStore.getWallet(wallet.id);
+						if(foundWallet){
+							foundWallet.copy(wallet);
+							return foundWallet;
+						}
+						return new Wallet(wallet);
+					});
+					this.transactionsStore.transactions = ans.transactions;
+					this.transactionsStore.categories = ans.categories;
+					this.transactionsStore.types = ans.transaction_types;
 
-					if(this.WalletStore.wallets.length) {
-						this.UIStore.TransactionsUI.selectedWallet = this.WalletStore.wallets[0];
+					const limits: Limit[] = ans.all_limits.map(l=> ({...l, category: ans.categories[l.category_id]}))
+					this.periodStore.limits = limits;
+					this.uiStore.walletsUI.refreshLimitsUi();
+
+					if(this.walletStore.wallets.length) {
+						this.uiStore.transactionsUI.selectedWallet = this.walletStore.wallets[0];
 					}
-					if (ans.wallets.length > 1) this.UIStore.TransactionsUI.selectedToWallet = ans.wallets[1].id;
+					if (ans.wallets.length > 1) this.uiStore.transactionsUI.selectedToWallet = ans.wallets[1].id;
 
-					this.PeriodStore.periods = ans.periods.map((p)=>{
+					this.periodStore.periods = ans.periods.map((p)=>{
 						const period: IPeriod = {
 							id: p.id,
 							startDate: new Date(p.start_date),
 							endDate: new Date(p.end_date),
 							initStore: p.init_store,
 							walletsInited: p.wallets_inited.map(item=>{return {
-								wallet: this.WalletStore.getWallet(item.id),
+								wallet: this.walletStore.getWallet(item.id),
 								sum: item.sum,
 								isAddToBalance: Boolean(item.is_add_to_balance)
 							}})
@@ -134,21 +164,31 @@ class RootStore {
 
 					this.dataLoaded = true;
 					this.auth = true;
+
+					if(this.isDev){
+						const walletsUI = this.uiStore.walletsUI;
+						setTimeout(()=>walletsUI.periodClick(139),500)
+						// walletsUI.activeModal = "newPeriod"
+						// walletsUI.newPeriodStartDate = '2023-10-01'
+						// walletsUI.newPeriodEndDate = '2023-10-30'
+						// walletsUI.periodSelected = this.periodStore.getPeriod(134)
+					}
 				}
-			}).finally(() => {
+			})
+			.finally(() => {
 			this.isFetchingProp = false
 		});
 	};
 
-	@computed get isFetching() {
+	get isFetching() {
 		return this.isFetchingProp || !this.isNormalFetchTimePassed
 	}
 
-	@action setAuth(val: boolean): void {
+	setAuth(val: boolean): void {
 		this.auth = val;
 	}
 
-	@computed get getCurrDate() {
+	get getCurrDate() {
 		let currDate = this.currDate;
 		return [
 			currDate.getFullYear(),
@@ -157,12 +197,12 @@ class RootStore {
 		].join('-');
 	};
 
-	@action.bound currDateChange(val: number) {
+	currDateChange(val: number) {
 		this.currDate = new Date(this.currDate.setDate(this.currDate.getDate() + val));
 		this.fetchData();
 	};
 
-	@action.bound setCurrDateToday() {
+	setCurrDateToday() {
 		this.currDate = new Date();
 		this.fetchData();
 	}
@@ -183,7 +223,7 @@ class RootStore {
 		].join('-')
 	};
 
-	@computed get isAllBalancesNull(){
+	get isAllBalancesNull(){
 		if(!this.balances) return true;
 		return Object.values(this.balances).every(b=>b === null);
 	}
@@ -226,7 +266,7 @@ class RootStore {
 		})
 	};
 
-	@action.bound logout = () => {
+	logout = () => {
 		const get = {
 			method: 'log_out'
 		};
@@ -248,9 +288,11 @@ class RootStore {
 		return -dateDiff + ' назад'
 	}; //человекочитаемая разница в днях
 
-	getColor = (val: number) => {
-		if (Math.abs(val) > 1000) val = 1000 * Math.sign(val);
-		val = val / 1000;
+	getColor = (val: number, perDay: number) => {
+		const borderValue = perDay*2
+		val=val+perDay; //move to make it more green at 0
+		if (Math.abs(val) > borderValue) val = borderValue * Math.sign(val);
+		val = val / borderValue;
 		let red = 0;
 		let green = 0;
 		const initGreen = 210;

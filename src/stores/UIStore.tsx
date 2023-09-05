@@ -1,4 +1,4 @@
-import {action, observable} from "mobx";
+import {action, makeAutoObservable, observable} from "mobx";
 import RootStore from './RootStore'
 import HomeUI from "./UIStore/HomeUI";
 import TransactionsUI from "./UIStore/TransactionsUI";
@@ -6,36 +6,45 @@ import LoginUI from "./UIStore/LoginUI";
 import WalletsUI from "./UIStore/WalletsUI";
 import AnalyticsUI from "./UIStore/AnalyticsUI";
 import {ActiveStories} from "../global";
+import rootStore from "./RootStore";
+import autoBind from "../utils/autoBind";
+import PopoutsUi from "./UIStore/popouts/PopoutsUi";
 
 class UIStore {
-	constructor(RootStore: RootStore) {
-		this.RootStore = RootStore;
+	constructor(rootStore: RootStore) {
+		makeAutoObservable(this)
+		autoBind(this)
+		this.rootStore = rootStore;
 
-		this.HomeUI = new HomeUI(this);
-		this.TransactionsUI = new TransactionsUI(this);
-		this.WalletsUI = new WalletsUI(this);
-		this.AnalyticsUI = new AnalyticsUI(this);
+		this.homeUI = new HomeUI(this);
+		this.transactionsUI = new TransactionsUI(this);
+		this.walletsUI = new WalletsUI(this);
+		this.analyticsUI = new AnalyticsUI(this);
+		this.popoutsUi = new PopoutsUi(this);
 
 		//после остальных UI
-		this.LoginUI = new LoginUI(this);
+		this.loginUI = new LoginUI(this);
 	}
 
-	RootStore: RootStore;
-	HomeUI: HomeUI;
-	WalletsUI: WalletsUI;
-	TransactionsUI: TransactionsUI;
-	AnalyticsUI: AnalyticsUI;
-	LoginUI: LoginUI;
+	isDev: boolean = process.env.NODE_ENV === "development";
 
-	@observable activeStory: ActiveStories = (process.env.NODE_ENV === 'development') ? "transactions" : 'home';
+	rootStore: RootStore;
+	homeUI: HomeUI;
+	walletsUI: WalletsUI;
+	transactionsUI: TransactionsUI;
+	analyticsUI: AnalyticsUI;
+	loginUI: LoginUI;
+	popoutsUi: PopoutsUi;
 
-	@action.bound onStoryChange = (e: any) => {
+	activeStory: ActiveStories = this.isDev ? "wallets" : 'home';
+
+	onStoryChange = (e: any) => {
 		this.activeStory = e.currentTarget.dataset.story;
 	};
 
-	@action.bound refreshPage(){
-		this.RootStore.currDate = new Date();
-		this.RootStore.fetchData();
+	refreshPage(){
+		this.rootStore.currDate = new Date();
+		this.rootStore.fetchData();
 	}
 }
 

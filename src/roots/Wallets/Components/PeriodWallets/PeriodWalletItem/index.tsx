@@ -14,6 +14,7 @@ class PeriodWalletItem extends React.Component<{
     item: IPeriodWallet,
     changeWallet: (p: IPeriodWallet, x: Wallet) => void,
     changeValue: (p: IPeriodWallet, x: number) => void,
+    onChangeValue: (x: number) => void,
     changeIsAddToBalance: (p: IPeriodWallet, x: boolean) => void,
     walletsToSelect: Wallet[],
     delNewPeriodWallet: Function
@@ -23,14 +24,16 @@ class PeriodWalletItem extends React.Component<{
 
     render() {
         const RootStore = this.props.RootStore!;
-        const {WalletStore} = RootStore;
+        const {walletStore} = RootStore;
         const {item, walletsToSelect, delNewPeriodWallet} = this.props;
         return (
             <Div style={{display: "flex", flexDirection: "column"}}>
                 <div style={{display: "flex", flexGrow: 1}}>
                     <Select
                         style={{flexGrow: 1}}
-                        onChange={e => this.props.changeWallet(item, WalletStore.getWallet(parseInt(e.target.value)))}
+                        onChange={e => {
+                            this.props.changeWallet(item, walletStore.getWallet(parseInt(e.target.value)));
+                        }}
                         value={item.wallet.id}
                     >
                         <option disabled value="null">Выбрать счёт</option>
@@ -40,7 +43,10 @@ class PeriodWalletItem extends React.Component<{
                         )}
                     </Select>
                     <Input
-                        onChange={e => this.props.changeValue(item, parseInt(e.target.value))}
+                        onChange={e => {
+                            this.props.changeValue(item, parseInt(e.target.value))
+                            this.props.onChangeValue(parseInt(e.target.value))
+                        }}
                         autoFocus={true}
                         value={isNaN(item.sum) ? '' : item.sum}
                         style={{width: '80px'}}

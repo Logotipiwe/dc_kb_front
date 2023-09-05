@@ -14,13 +14,13 @@ class ItemNew extends React.Component<{
 }, any>{
 	render() {
 		const RootStore = this.props.RootStore!;
-		const {WalletStore} = RootStore;
+		const {walletStore} = RootStore;
 		const {walletsToSelect, wallet, sum} = this.props;
 		return (
 			<Div style={{display: "flex"}}>
 				<Select
 					style={{flexGrow: 1}}
-					onChange={e=>wallet.onChange(WalletStore.getWallet(parseInt(e.target.value)))}
+					onChange={e=>wallet.onChange(walletStore.getWallet(parseInt(e.target.value)))}
 					value={(wallet.value) ? wallet.value.id : "null"}
 				>
 					<option disabled value="null">Выбрать счёт</option>

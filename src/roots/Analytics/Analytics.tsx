@@ -22,15 +22,15 @@ class Analytics extends React.Component<{ RootStore?: RootStore, key: any, id: a
     render() {
         const RootStore = this.props.RootStore!;
         const {appData} = RootStore;
-        const analytics: IAnalyticsResponse = appData.analytics;
-        const currPeriod: Period|null = RootStore.PeriodStore.currPeriod;
+        const analytics: IAnalyticsResponse = appData!.analytics;
+        const currPeriod: Period|null = RootStore.periodStore.currPeriod;
         const initStored: number = currPeriod ? currPeriod.initStore : 0;
 
         const storeValue = analytics.stored - analytics.invested;
         return (
             <Root activeView='1'><View id='1' activePanel={'1'} header={false}><Panel id='1'>
                 <PanelHeader title='Аналитика'/>
-                <PullToRefresh onRefresh={RootStore.UIStore.refreshPage} isFetching={RootStore.isFetching}>
+                <PullToRefresh onRefresh={RootStore.uiStore.refreshPage} isFetching={RootStore.isFetching}>
                     <Group header={<Header mode="secondary">Аналитика</Header>}>
                         <Cell indicator={analytics.init_sum + 'P'}>Начальная сумма: </Cell>
                         <Cell indicator={analytics.value_real_left + 'P'}>Остаток: </Cell>

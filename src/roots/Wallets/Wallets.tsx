@@ -20,104 +20,85 @@ import NewWalletModal from "./Components/NewWalletModal";
 import DelWalletModal from "./Components/DelWalletModal";
 import NewPeriodModal from "./Components/NewPeriodModal";
 import PeriodPanel from "./Components/PeriodPanel";
+import CategoriesPanel from "../Transactions/components/CategoriesPanel";
+import transactionsStore from "../../stores/TransactionsStore";
+import Popouts from "../../components/Popouts";
 
 @inject("RootStore")
 @observer
 class Wallets extends React.Component<{ RootStore?: RootStore, key: any, id: any }, {}> {
 	componentDidMount() {
 		if (process.env.NODE_ENV === "development") {
-			// const RootStore = this.props.RootStore!;
-			// const WalletsUI = RootStore.UIStore.WalletsUI;
-			// WalletsUI.periodSelected = RootStore.PeriodStore.getPeriod(65);
-			// WalletsUI.activePanel = "period";
+			const RootStore = this.props.RootStore!;
+			const walletsUI = RootStore.uiStore.walletsUI;
+			// walletsUI.activeModal = "newPeriod"
+			// walletsUI.newPeriodStartDate = '2023-09-01'
+			// walletsUI.newPeriodEndDate = '2023-09-30'
+			// walletsUI.periodSelected = RootStore.periodStore.getPeriod(134)
 		}
 	}
 
 	render() {
 		const RootStore = this.props.RootStore!;
-		const {UIStore, PeriodStore} = RootStore;
-		const {WalletsUI} = UIStore;
+		const {uiStore, periodStore, transactionsStore} = RootStore;
+		const {walletsUI} = uiStore;
 
-		const wallets = RootStore.WalletStore.wallets;
-		const periods = RootStore.PeriodStore.periods;
+		const wallets = RootStore.walletStore.wallets;
+		const periods = RootStore.periodStore.periods;
 
-		const currPeriod = PeriodStore.currPeriod;
+		const currPeriod = periodStore.currPeriod;
 
 		const modal = (
-			<ModalRoot activeModal={WalletsUI.activeModal}>
+			<ModalRoot activeModal={walletsUI.activeModal}>
 				<NewWalletModal
 					id={'newWallet'}
 					dynamicContentHeight
-					onClose={WalletsUI.setActiveModal.bind(null, null)}
+					onClose={walletsUI.setActiveModal.bind(null, null)}
 				/>
 				<DelWalletModal
 					id={'delWallet'}
-					wallet={WalletsUI.deletingWallet!}
-					onClose={WalletsUI.setActiveModal.bind(null, null)}
+					wallet={walletsUI.deletingWallet!}
+					onClose={walletsUI.setActiveModal.bind(null, null)}
 				/>
 				<NewPeriodModal
 					id={'newPeriod'}
 					dynamicContentHeight
-					onClose={WalletsUI.onNewPeriodModalClose}
+					onClose={walletsUI.onNewPeriodModalClose}
 				/>
 			</ModalRoot>
 		);
-
-		const periodSel = WalletsUI.periodSelected;
-		const popout = (periodSel !== undefined && WalletsUI.isDeletingPeriod) ? (
-			<Alert
-				actionsLayout="vertical"
-				actions={[{
-					title: 'Удалить период',
-					autoclose: true,
-					mode: 'destructive',
-					action: WalletsUI.periodDelete.bind(null, periodSel),
-				}, {
-					title: 'Отмена',
-					autoclose: true,
-					mode: 'cancel'
-				}]}
-				onClose={WalletsUI.setIsDeletingPeriod.bind(null, false)}
-			>
-				<h2>Удалить период
-					с {RootStore.dateHuman(periodSel!.startDate)} по {RootStore.dateHuman(periodSel!.endDate)}?</h2>
-			</Alert>
-		) : null;
-
-		const canCreatePeriod: boolean = Boolean(RootStore.WalletStore.wallets.length);
-
+		const canCreatePeriod: boolean = Boolean(RootStore.walletStore.wallets.length);
 		return (
 			<Root activeView='1'>
-				<View id='1' popout={popout} activePanel={WalletsUI.activePanel} header={false} modal={modal}>
+				<View id='1' popout={uiStore.popoutsUi.isShowing() && <Popouts/>} activePanel={walletsUI.activePanel} header={false} modal={modal}>
 					<Panel id='1'>
 						<PanelHeader title='Счета'/>
-						<PullToRefresh onRefresh={UIStore.refreshPage} isFetching={RootStore.isFetching}>
+						<PullToRefresh onRefresh={uiStore.refreshPage} isFetching={RootStore.isFetching}>
 							<Group header={<Header mode='primary'>Счета</Header>}>
 								{wallets.length ? wallets.map(wallet => (
 									<Cell
 										key={wallet.id}
 										removable
-										onRemove={WalletsUI.showDelWalletConfirmation.bind(null, wallet)}
+										onRemove={walletsUI.showDelWalletConfirmation.bind(null, wallet)}
 										indicator={wallet.value}
 									>{wallet.title}</Cell>
 								)) : <Div>У вас пока нет счетов.</Div>}
-								<Cell><Link onClick={WalletsUI.setActiveModal.bind(null, "newWallet")}>Создать счёт</Link></Cell>
+								<Cell><Link onClick={walletsUI.setActiveModal.bind(null, "newWallet")}>Создать счёт</Link></Cell>
 							</Group>
 							<Group header={<Header mode='primary'>Периоды</Header>}>
 								{(canCreatePeriod)
-									? <Cell><Link onClick={WalletsUI.setActiveModal.bind(null, "newPeriod")}>Создать период</Link></Cell>
+									? <Cell><Link onClick={walletsUI.setActiveModal.bind(null, "newPeriod")}>Создать период</Link></Cell>
 									: null
 								}
 								{periods.length ? periods.slice().sort((p1, p2) => (p2.startDate.getTime() - p1.startDate.getTime())).map((period) => (
 									<Cell
 										key={period.id}
 										indicator={<Icon24BrowserForward/>}
-										onClick={WalletsUI.periodClick.bind(null, period.id)}
+										onClick={walletsUI.periodClick.bind(null, period.id)}
 									>
 										<Card mode={(currPeriod && period.id === currPeriod.id) ? 'outline' : 'tint'}>
 											<Div>{RootStore.dateHuman(period.startDate)} - {RootStore.dateHuman(period.endDate)}</Div>
 											{period.walletsInited.map((w) => {
-												console.log(w);
 												return <Div
 													key={w.wallet.id}
 												>
