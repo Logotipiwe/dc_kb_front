@@ -26,8 +26,20 @@ class Home extends React.Component<{ RootStore?: RootStore, key: any, id: any },
 
 		const analytics = appData.analytics;
 		const balances = rootStore.balances;
-		const periodBalances = appData.limit_balances;
 		const wallets = rootStore.walletStore.wallets;
+		const periodBalances = appData.limit_balances;
+
+		const balancesToShow: any[] = [];
+		const balancesToHide: any[] = [];
+
+		Object.entries(periodBalances).forEach(catIdToBalance=>{
+			if(uiStore.balancesUi.isBalanceShown(parseInt(catIdToBalance[0]))){
+				balancesToShow.push(catIdToBalance)
+			} else {
+				balancesToHide.push(catIdToBalance);
+			}
+		})
+
 		return (
 			<Root activeView='1'>
 				<View id='1' activePanel={'1'} header={false}>
@@ -38,12 +50,19 @@ class Home extends React.Component<{ RootStore?: RootStore, key: any, id: any },
 								<Group separator="show" header={<Header mode="primary">Аналитика</Header>}>
 									{!rootStore.isAllBalancesNull
                                         && <>
-                                            <Balance balance={balances}/>
-											{Object.entries(periodBalances).map(periodBalance=> {
+											<Balance balance={balances}/>
+											{balancesToShow.map(periodBalance=> {
 												const categoryId = parseInt(periodBalance[0])
 												const category = rootStore.transactionsStore.categories[categoryId]
 												return <Balance balance={periodBalance[1]} category={category}/>
 											})}
+											<div style={{display: "flex", padding: 12, flexWrap: "wrap"}}>
+												{balancesToHide.map(periodBalance=> {
+													const categoryId = parseInt(periodBalance[0])
+													const category = rootStore.transactionsStore.categories[categoryId]
+													return <Balance balance={periodBalance[1]} category={category}/>
+												})}
+											</div>
                                         </>}
                                     {(analytics.per_day !== null) && <Cell indicator={analytics.per_day + ' P'}>В день: </Cell>}
 									<Cell indicator={analytics.value_real_left + ' P'}>Остаток: </Cell>

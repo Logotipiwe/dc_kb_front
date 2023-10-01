@@ -169,6 +169,7 @@ class RootStore {
 
 					if(this.isDev){
 						const walletsUI = this.uiStore.walletsUI;
+						// this.uiStore.activeStory = "wallets"
 						// setTimeout(()=>walletsUI.periodClick(139),500)
 						// walletsUI.activeModal = "newPeriod"
 						// walletsUI.newPeriodStartDate = '2023-10-01'

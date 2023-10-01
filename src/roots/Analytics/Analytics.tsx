@@ -32,22 +32,22 @@ class Analytics extends React.Component<{ RootStore?: RootStore, key: any, id: a
                 <PanelHeader title='Аналитика'/>
                 <PullToRefresh onRefresh={RootStore.uiStore.refreshPage} isFetching={RootStore.isFetching}>
                     <Group header={<Header mode="secondary">Аналитика</Header>}>
-                        <Cell indicator={analytics.init_sum + 'P'}>Начальная сумма: </Cell>
-                        <Cell indicator={analytics.value_real_left + 'P'}>Остаток: </Cell>
-                        <Cell indicator={analytics.value_sum + 'P'}>Остаток без учета доходов: </Cell>
-                        <Cell indicator={analytics.value_sum - ((storeValue > 0) ? storeValue : 0) + 'P'}>
+                        <Cell indicator={analytics.init_sum}>Начальная сумма: </Cell>
+                        <Cell indicator={analytics.value_real_left}>Остаток: </Cell>
+                        <Cell indicator={analytics.value_sum}>Остаток без учета доходов: </Cell>
+                        <Cell indicator={analytics.value_sum - ((storeValue > 0) ? storeValue : 0)}>
                             Остаток без доходов и накоплений: </Cell>
                         <Separator/>
                         {(analytics.stored)
-                            ? <Cell indicator={(analytics.stored - initStored) + 'P'}>
+                            ? <Cell indicator={(analytics.stored - initStored)}>
                                 Накоплено:
                         </Cell> : null}
                         {initStored
-                            ? <Cell indicator={initStored + 'P'}>
+                            ? <Cell indicator={initStored}>
                                 Нач. накопления:
                             </Cell> : null}
                         {(analytics.invested)
-                            ? <Cell indicator={analytics.invested + 'P'}>
+                            ? <Cell indicator={analytics.invested}>
                                 Вложено:
                         </Cell> : null}
                         <Cell

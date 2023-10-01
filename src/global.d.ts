@@ -128,8 +128,10 @@ interface IGetDataAnsResponse {
 	analytics: IAnalyticsResponse,
 }
 
+type LimitBalance = Record<string, Record<string, number> >
+
 interface IGetData extends IGetDataAnsResponse {
-	limit_balances: Record<string, Record<string, number> >
+	limit_balances: LimitBalance
 }
 
 interface IAnalyticsResponse {

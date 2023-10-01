@@ -7,53 +7,25 @@ import RootStore from "../../../stores/RootStore";
 import autoBind from "../../../utils/autoBind";
 import {Div} from "@vkontakte/vkui/dist";
 
-
-type DisplayModes = "big" | "row";
-const KEY: string = "displayBalanceInCategory:"
-
 @inject("RootStore")
 @observer
 class Balance extends React.Component<{
     balance: Record<string, number>,
     category?: ICategory,
     RootStore?: RootStore
-}, { display: DisplayModes }> {
-    constructor(props) {
-        super(props);
-        autoBind(this)
-        const key = this.getStorageKey(props.category);
-        const value = localStorage.getItem(key);
-        if (value === "big" || value === "row") {
-            this.state = {display: value};
-        } else {
-            const display = props.category ? "row" : "big";
-            this.state = {display: display};
-            localStorage.setItem(key, display)
-        }
-    }
-
-    private getStorageKey(category?: ICategory) {
-        return KEY + (category?.id || "null");
-    }
-
-    shiftDisplayMode() {
-        const newMode = this.state.display === "big" ? "row" : "big";
-        this.setNewDisplayMode(newMode)
-    }
-
-    setNewDisplayMode(mode: DisplayModes) {
-        this.setState({display: mode})
-        localStorage.setItem(this.getStorageKey(this.props.category), mode);
-    }
-
+}, any> {
     render() {
         const category = this.props.category;
         const balances = this.props.balance;
         const rootStore = this.props.RootStore!;
         const analytics = rootStore.appData!.analytics;
+        const balancesUi = rootStore.uiStore.balancesUi;
+        const onRowClick = balancesUi.shiftDisplayMode.bind(null, this.props.category?.id);
 
-        if (this.state.display === "row") {
-            return <CardGrid onClick={this.shiftDisplayMode}>
+        const mode = balancesUi.getDisplayModeByCatId(category?.id)
+
+        if (mode === "row") {
+            return <CardGrid onClick={onRowClick}>
                 <Card size="l" style={{padding: "8px 10px", boxSizing: "border-box"}}>
                     <div style={{display: "flex", justifyContent: "space-between"}}>
                     <span style={{
@@ -82,10 +54,24 @@ class Balance extends React.Component<{
                     </div>
                 </Card>
             </CardGrid>;
+        } else if(mode === "hidden") {
+            return <div style={{margin: 5, display: "flex", flexDirection: "column", alignItems: "center"}}
+                        onClick={onRowClick}
+            >
+                <div>
+                    <img src={imgSrc(category!.img)} height={30}
+                         style={{backgroundColor: category!.color, borderRadius: "50%", padding: 4, boxSizing: "border-box"}}
+                    />
+                </div>
+                <div style={{borderRadius: "50%",
+                    backgroundColor: rootStore.getColor(Object.values(balances)[0], 10000),
+                    height: 10, width: 10
+                }}/>
+            </div>
         } else {
             return <>
                 <Div>{category ? category.title : undefined}</Div>
-                <CardGrid onClick={this.shiftDisplayMode}>
+                <CardGrid onClick={onRowClick}>
                     {Object.keys(balances).map(date => {
                         const balance = balances[date];
                         return <Card size='s' key={date}>
@@ -99,7 +85,7 @@ class Balance extends React.Component<{
                                             textAlign: 'center',
                                             paddingTop: 20,
                                             fontSize: 27
-                                        }}>{balance} P
+                                        }}>{balance}
                                         </div>
                                     </>
                                 }

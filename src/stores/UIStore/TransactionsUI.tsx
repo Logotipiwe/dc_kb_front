@@ -15,9 +15,9 @@ export default class TransactionsUI {
 
 	isDev: boolean = process.env.NODE_ENV === "development";
 
-	activeModal: TransModal = this.isDev ? "newTrans" : null;
+	activeModal: TransModal = null;
 	isShowErr: boolean = false;
-	inputValue: Nullable<number> = this.isDev ? 1500 : null;
+	inputValue: Nullable<number> = null;
 	selectedWallet: Nullable<Wallet> = null;
 	selectedToWallet: Nullable<number> = null;
 	isAddToBalance: boolean = true;
