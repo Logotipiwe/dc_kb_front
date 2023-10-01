@@ -138,7 +138,9 @@ class RootStore {
 					this.transactionsStore.categories = ans.categories;
 					this.transactionsStore.types = ans.transaction_types;
 
-					const limits: Limit[] = ans.all_limits.map(l=> ({...l, category: ans.categories[l.category_id]}))
+					const limits: Limit[] = ans.all_limits
+						.filter(l=>ans.curr_period && ans.curr_period.id === l.period_id)
+						.map(l=> ({...l, category: ans.categories[l.category_id]}))
 					this.periodStore.limits = limits;
 					this.uiStore.walletsUI.refreshLimitsUi();
 
@@ -167,7 +169,7 @@ class RootStore {
 
 					if(this.isDev){
 						const walletsUI = this.uiStore.walletsUI;
-						setTimeout(()=>walletsUI.periodClick(139),500)
+						// setTimeout(()=>walletsUI.periodClick(139),500)
 						// walletsUI.activeModal = "newPeriod"
 						// walletsUI.newPeriodStartDate = '2023-10-01'
 						// walletsUI.newPeriodEndDate = '2023-10-30'

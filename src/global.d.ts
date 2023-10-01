@@ -123,7 +123,7 @@ interface IGetDataAnsResponse {
 	wallets: IWallet[]
 	transaction_types: ITransactionType[],
 	periods: IPeriodRes[],
-	// curr_period: IPeriodRes,
+	curr_period: IPeriodRes,
 	user_id: number,
 	analytics: IAnalyticsResponse,
 }
