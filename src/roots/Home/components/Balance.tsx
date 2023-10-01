@@ -7,6 +7,8 @@ import RootStore from "../../../stores/RootStore";
 import autoBind from "../../../utils/autoBind";
 import {Div} from "@vkontakte/vkui/dist";
 
+const DEFAULT_PER_DAY = 10000;
+
 @inject("RootStore")
 @observer
 class Balance extends React.Component<{
@@ -46,7 +48,7 @@ class Balance extends React.Component<{
                         <div style={{display: "flex", flexBasis: "50%", justifyContent: "space-between", fontSize: 20}}>
                             {Object.values(balances).map(amount => {
                                 return <span style={{
-                                    color: rootStore.getColor(amount, 1000),
+                                    color: rootStore.getColor(amount, DEFAULT_PER_DAY),
                                     marginRight: 10
                                 }}>{amount}</span>
                             })}
@@ -64,7 +66,7 @@ class Balance extends React.Component<{
                     />
                 </div>
                 <div style={{borderRadius: "50%",
-                    backgroundColor: rootStore.getColor(Object.values(balances)[0], 10000),
+                    backgroundColor: rootStore.getColor(Object.values(balances)[0], DEFAULT_PER_DAY),
                     height: 10, width: 10
                 }}/>
             </div>
