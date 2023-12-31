@@ -23,6 +23,7 @@ import PeriodPanel from "./Components/PeriodPanel";
 import CategoriesPanel from "../Transactions/components/CategoriesPanel";
 import transactionsStore from "../../stores/TransactionsStore";
 import Popouts from "../../components/Popouts";
+import {fmt} from "../../utils/functions";
 
 @inject("RootStore")
 @observer
@@ -80,7 +81,7 @@ class Wallets extends React.Component<{ RootStore?: RootStore, key: any, id: any
 										key={wallet.id}
 										removable
 										onRemove={walletsUI.showDelWalletConfirmation.bind(null, wallet)}
-										indicator={wallet.value}
+										indicator={fmt(wallet.value)}
 									>{wallet.title}</Cell>
 								)) : <Div>У вас пока нет счетов.</Div>}
 								<Cell><Link onClick={walletsUI.setActiveModal.bind(null, "newWallet")}>Создать счёт</Link></Cell>
@@ -102,10 +103,10 @@ class Wallets extends React.Component<{ RootStore?: RootStore, key: any, id: any
 												return <Div
 													key={w.wallet.id}
 												>
-													{w.wallet.title} - {w.sum} P {!w.isAddToBalance ? "(не в баланс)" : null}
+													{w.wallet.title} - {fmt(w.sum)} {!w.isAddToBalance ? "(не в баланс)" : null}
 												</Div>
 											})}
-											{(period.initStore) ? <Div>нач. накопления - {period.initStore} P</Div> : null}
+											{(period.initStore) ? <Div>нач. накопления - {fmt(period.initStore)}</Div> : null}
 										</Card>
 									</Cell>
 								)) : <Div>У вас пока нет

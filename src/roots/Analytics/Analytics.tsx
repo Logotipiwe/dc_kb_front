@@ -15,6 +15,7 @@ import './Analytics.scss'
 import Group from "@vkontakte/vkui/dist/components/Group/Group";
 import {IAnalyticsResponse} from "../../global";
 import {Period} from "../../stores/models/Period";
+import {fmt} from "../../utils/functions";
 
 @inject("RootStore")
 @observer
@@ -32,32 +33,32 @@ class Analytics extends React.Component<{ RootStore?: RootStore, key: any, id: a
                 <PanelHeader title='Аналитика'/>
                 <PullToRefresh onRefresh={RootStore.uiStore.refreshPage} isFetching={RootStore.isFetching}>
                     <Group header={<Header mode="secondary">Аналитика</Header>}>
-                        <Cell indicator={analytics.init_sum}>Начальная сумма: </Cell>
-                        <Cell indicator={analytics.value_real_left}>Остаток: </Cell>
-                        <Cell indicator={analytics.value_sum}>Остаток без учета доходов: </Cell>
-                        <Cell indicator={analytics.value_sum - ((storeValue > 0) ? storeValue : 0)}>
+                        <Cell indicator={fmt(analytics.init_sum)}>Начальная сумма: </Cell>
+                        <Cell indicator={fmt(analytics.value_real_left)}>Остаток: </Cell>
+                        <Cell indicator={fmt(analytics.value_sum)}>Остаток без учета доходов: </Cell>
+                        <Cell indicator={fmt(analytics.value_sum - ((storeValue > 0) ? storeValue : 0))}>
                             Остаток без доходов и накоплений: </Cell>
                         <Separator/>
                         {(analytics.stored)
-                            ? <Cell indicator={(analytics.stored - initStored)}>
+                            ? <Cell indicator={fmt((analytics.stored - initStored))}>
                                 Накоплено:
                         </Cell> : null}
                         {initStored
-                            ? <Cell indicator={initStored}>
+                            ? <Cell indicator={fmt(initStored)}>
                                 Нач. накопления:
                             </Cell> : null}
                         {(analytics.invested)
-                            ? <Cell indicator={analytics.invested}>
+                            ? <Cell indicator={fmt(analytics.invested)}>
                                 Вложено:
                         </Cell> : null}
                         <Cell
-                            indicator={(<span style={{color: "green"}}>{storeValue + 'P'}</span>)}>
+                            indicator={(<span style={{color: "green"}}>{fmt(storeValue)}</span>)}>
                             Накопления:
                         </Cell>
                     </Group>
                     <Group header={<Header mode={"secondary"}>За этот месяц</Header>}>
                         {analytics.month_analytics.outcomes_by_category?.map(outByCat =>
-                            <Cell indicator={outByCat.sum + 'р'} key={outByCat.title}>
+                            <Cell indicator={fmt(outByCat.sum)} key={outByCat.title}>
                                 <div className='outcome_by_category'>
                                     <div className="img" style={{backgroundColor: outByCat.color}}>
                                         {outByCat.img && <img src={outByCat.img} alt='cat_img'/>}

@@ -2,7 +2,7 @@ import {inject, observer} from "mobx-react/dist";
 import React from "react";
 import {ICategory} from "../../../global";
 import {Card, CardGrid} from "@vkontakte/vkui";
-import {imgSrc} from "../../../utils/functions";
+import {fmt, imgSrc} from "../../../utils/functions";
 import RootStore from "../../../stores/RootStore";
 import autoBind from "../../../utils/autoBind";
 import {Div} from "@vkontakte/vkui/dist";
@@ -50,7 +50,7 @@ class Balance extends React.Component<{
                                 return <span style={{
                                     color: rootStore.getColor(amount, DEFAULT_PER_DAY),
                                     marginRight: 10
-                                }}>{amount}</span>
+                                }}>{fmt(amount)}</span>
                             })}
                         </div>
                     </div>
@@ -87,7 +87,7 @@ class Balance extends React.Component<{
                                             textAlign: 'center',
                                             paddingTop: 20,
                                             fontSize: 27
-                                        }}>{balance}
+                                        }}>{fmt(balance)}
                                         </div>
                                     </>
                                 }

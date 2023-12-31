@@ -38,6 +38,7 @@ import {WalletSelect} from "./components/WalletSelect";
 import CategoriesPanel from "./components/CategoriesPanel";
 import rootStore from "../../stores/RootStore";
 import Popouts from "../../components/Popouts";
+import {fmt} from "../../utils/functions";
 
 @inject('RootStore')
 @observer
@@ -179,12 +180,12 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 										onRemove={rootStore.delTransaction.bind(null, trans.id)}
 										indicator={trans.title + (trans.to_title ? ('->' + trans.to_title) : '')}
 										description={type.title + ((trans.category !== null) ? ' на ' + categories[trans.category].title.toLowerCase() : '') + (trans.is_unnecessary ? ' (необяз.)' : '')}
-									>{trans.value} P</Cell>
+									>{fmt(trans.value)}</Cell>
 								)
 							}) : <Spinner size='large'/>}
 							{(currentBalance > 0) && <CellButton
 								onClick={transactionsUI.storeMoneyLeft.bind(null, currentBalance)}
-							>{currentBalance}р в накопления</CellButton>}
+							>{fmt(currentBalance)} в накопления</CellButton>}
 							<CellButton
 								onClick={transactionsUI.setActiveModal.bind(null, "newTrans")}
 							>Добавить новую транзакцию</CellButton>
