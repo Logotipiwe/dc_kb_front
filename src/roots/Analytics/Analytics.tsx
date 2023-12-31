@@ -52,8 +52,8 @@ class Analytics extends React.Component<{ RootStore?: RootStore, key: any, id: a
                                 Вложено:
                         </Cell> : null}
                         <Cell
-                            indicator={(<span style={{color: "green"}}>{fmt(storeValue)}</span>)}>
-                            Накопления:
+                            indicator={(<span style={{color: "green"}}>{fmt(storeValue-initStored)}</span>)}>
+                            Разница:
                         </Cell>
                     </Group>
                     <Group header={<Header mode={"secondary"}>За этот месяц</Header>}>

@@ -34,7 +34,6 @@ class Home extends React.Component<{ RootStore?: RootStore, key: any, id: any },
 			}
 		})
 
-		const initStore = rootStore.periodStore.currPeriod?.initStore
 		const stored = analytics.stored - analytics.invested;
 
 		return (
@@ -64,9 +63,7 @@ class Home extends React.Component<{ RootStore?: RootStore, key: any, id: any },
                                     {(analytics.per_day !== null) && <Cell indicator={fmt(analytics.per_day)}>В день: </Cell>}
 									<Cell indicator={fmt(analytics.value_real_left)}>Остаток: </Cell>
 									{(analytics.stored !== null && analytics.invested !== null) &&
-										<Cell indicator={
-											(initStore ? ` ${fmt(stored - initStore)} ` : "") + `(${fmt(stored)})`
-										}>Накопления: </Cell>
+										<Cell indicator={fmt(stored)}>Накопления: </Cell>
 									}
 								</Group> : <CellButton>Создать новый период</CellButton>}
 							<Group header={<Header mode='primary'>Счета</Header>}>
