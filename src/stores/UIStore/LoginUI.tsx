@@ -1,12 +1,13 @@
-import {action, observable} from "mobx";
+import {action, makeAutoObservable, observable} from "mobx";
 import UIStore from "../UIStore";
 import {LoginView} from "../../global";
 import autoBind from "../../utils/autoBind";
 
 export default class LoginUI {
     constructor(UIStore: UIStore) {
-        this.UIStore = UIStore;
+        makeAutoObservable(this)
         autoBind(this)
+        this.UIStore = UIStore;
     }
 
     UIStore: UIStore;
