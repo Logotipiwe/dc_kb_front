@@ -89,6 +89,18 @@ class TransactionsStore {
 			return res;
 		});
 	};
+
+	isCurrDateMoreThanLastFinal(date: string): boolean{
+		const lastFinalDate = this.RootStore.appData?.final_sum_date
+		return lastFinalDate ? date > lastFinalDate : true;
+	};
+
+	setFinalSumDate() {
+		const get = {method: 'set_final_sum_date', date: this.RootStore.getCurrDate};
+		return this.RootStore.doAjax(get).then(x => x.json()).then(res => {
+			this.RootStore.fetchData()
+		})
+	}
 }
 
 export default TransactionsStore

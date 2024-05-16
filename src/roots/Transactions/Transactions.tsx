@@ -186,6 +186,10 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 							{(currentBalance > 0) && <CellButton
 								onClick={transactionsUI.storeMoneyLeft.bind(null, currentBalance)}
 							>{fmt(currentBalance)} в накопления</CellButton>}
+							{transactionsUI.isShowSetFinalSumButton() ? <CellButton
+								onClick={rootStore.isFetching ? undefined : transactionsStore.setFinalSumDate}
+								style={{color: 'green'}}
+							>Закрепить сумму</CellButton> : null}
 							<CellButton
 								onClick={transactionsUI.setActiveModal.bind(null, "newTrans")}
 							>Добавить новую транзакцию</CellButton>

@@ -126,6 +126,7 @@ interface IGetDataAnsResponse {
 	curr_period: IPeriodRes,
 	user_id: number,
 	analytics: IAnalyticsResponse,
+	final_sum_date?: string
 }
 
 type LimitBalance = Record<string, Record<string, number> >

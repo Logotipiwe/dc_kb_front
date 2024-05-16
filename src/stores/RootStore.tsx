@@ -9,9 +9,6 @@ import Wallet from "./models/Wallet";
 import {IGetData, IGetDataAnsResponse, IGetDataResponse, IPeriod, Limit} from "../global";
 import autoBind from "../utils/autoBind";
 
-//TODO tags
-//TODO user settings (auto focus transaction value)
-
 export interface RootStoreProp{
 	RootStore?: RootStore
 }

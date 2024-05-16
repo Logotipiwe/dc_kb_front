@@ -3,6 +3,7 @@ import UIStore from "../UIStore";
 import Wallet from "../models/Wallet";
 import {ICategory, Nullable, TransModal, TransValueTypes} from "../../global";
 import autoBind from "../../utils/autoBind";
+import transactionsStore from "../TransactionsStore";
 
 export default class TransactionsUI {
 	constructor(UIStore: UIStore) {
@@ -124,6 +125,10 @@ export default class TransactionsUI {
 		this.setActiveModal("newTrans");
 		this.inputValue = valueLeft;
 		this.selectedType = 4;
+	}
+
+	isShowSetFinalSumButton(): boolean {
+		return this.UIStore.rootStore.transactionsStore.isCurrDateMoreThanLastFinal(this.UIStore.rootStore.getCurrDate);
 	}
 
 	setDefaults() {

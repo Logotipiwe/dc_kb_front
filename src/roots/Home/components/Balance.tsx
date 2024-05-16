@@ -81,7 +81,10 @@ class Balance extends React.Component<{
                                 {(balance !== null) &&
                                     <>
                                         <div
-                                            style={{textAlign: 'center'}}>{rootStore.dateDiffHuman(date)}</div>
+                                            style={{
+                                                textAlign: 'center',
+                                                textDecoration: rootStore.transactionsStore.isCurrDateMoreThanLastFinal(date) ? undefined : "underline"
+                                        }}>{rootStore.dateDiffHuman(date)}</div>
                                         <div style={{
                                             color: rootStore.getColor(balance, analytics.per_day),
                                             textAlign: 'center',

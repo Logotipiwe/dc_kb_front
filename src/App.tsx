@@ -20,7 +20,9 @@ import Analytics from "./roots/Analytics/Analytics";
 @observer
 class App extends React.Component<{ RootStore?: RootStore }, {}> {
 	componentDidMount(): void {
-		this.props.RootStore!.fetchData();
+		this.props.RootStore!.auth = false;
+		this.props.RootStore!.dataLoaded = true;
+		// this.props.RootStore!.fetchData();
 		// const schemeAttribute = document.createAttribute('scheme');
 		// schemeAttribute.value = 'space_gray';
 		// document.body.attributes.setNamedItem(schemeAttribute);
