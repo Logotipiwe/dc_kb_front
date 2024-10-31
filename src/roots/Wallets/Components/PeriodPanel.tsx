@@ -45,8 +45,6 @@ class PeriodPanel extends React.Component<{ RootStore?: RootStore }, any> {
 			period.UI.walletsInited.every((wi: IPeriodWallet) => wi.wallet !== w)
 		);
 
-		const periodLimits = rootStore.periodStore.getPeriodLimits(period.id)
-
 		let limitsUi = walletsUI.limitsUi;
 		return (
 			<>

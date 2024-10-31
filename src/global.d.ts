@@ -107,18 +107,20 @@ interface IOutcomeByCategory {
 }
 
 interface LimitDto {
-	id,period_id,category_id,amount: number
+	id,period_id,category_id,amount: number,
+	type: LimitType
 }
 interface Limit {
 	id,period_id,amount: number
 	category: ICategory
+	type: LimitType
 }
 
 interface IGetDataAnsResponse {
 	categories: Record<any, ICategory>,
 	transactions: any,
 	balances: Record<string, number>,
-	limit_balances: Record<string, Record<string, number>|null >
+	limit_balances: IGetDataLimitBalances
 	all_limits: LimitDto[]
 	wallets: IWallet[]
 	transaction_types: ITransactionType[],
@@ -129,10 +131,17 @@ interface IGetDataAnsResponse {
 	final_sum_date?: string
 }
 
-type LimitBalance = Record<string, Record<string, number> >
+interface IGetDataLimitBalances {
+	DAY: {[date: string]: {[catId:string]:number}|null}
+	PERIOD: {[catId: string]: {amount: number}}
+}
+
+type CatIdToDateToBalance = Record<string, DateToBalance >
+
+type DateToBalance = {[date:string]: number|undefined}
 
 interface IGetData extends IGetDataAnsResponse {
-	limit_balances: LimitBalance
+	limit_balances: IGetDataLimitBalances
 }
 
 interface IAnalyticsResponse {
@@ -146,3 +155,4 @@ interface IAnalyticsResponse {
 	value_real_left: number,
 	value_sum: number
 }
+type LimitType = "DAY"|"PERIOD"

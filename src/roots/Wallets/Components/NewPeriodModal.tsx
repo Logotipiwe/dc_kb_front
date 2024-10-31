@@ -30,9 +30,6 @@ class NewPeriodModal extends React.Component<any, any> {
                 }
             >
                 <FormLayout>
-                    {walletsUI.showErr && <FormStatus header="Ошибка ввода данных" mode="error">
-                        Проверьте правильность полей.
-                    </FormStatus>}
                     <FormLayoutGroup
                         top='Даты начала и конца периода'
                     >
@@ -78,11 +75,11 @@ class NewPeriodModal extends React.Component<any, any> {
                         <InfoRow header="Всего в периоде">{walletsUI.newPeriodWalletsSum} p</InfoRow>
                         <InfoRow header="В день">{walletsUI.newPeriodPerDay}</InfoRow>
                     </Cell>
-                    {/*<FormStatus mode={"error"}>*/}
-                    {/*    <p style={{fontSize: 17, margin: 0}}>*/}
-                    {/*        Невозможно создать период, пересекающийся с уже существующим*/}
-                    {/*    </p>*/}
-                    {/*</FormStatus>*/}
+                    {walletsUI.showErr && <FormStatus mode={"error"}>
+                        <p style={{fontSize: 17, margin: 0}}>
+                            {walletsUI.errText}
+                        </p>
+                    </FormStatus>}
                     <Button
                         size="xl"
                         mode="commerce"

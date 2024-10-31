@@ -7,7 +7,7 @@ import {
     ICategory,
     INewPeriodWallet,
     IPeriodWallet,
-    IWallet, Limit, LimitDto,
+    IWallet, Limit, LimitType,
     Nullable,
     WalletPageModals,
     WalletsActivePanels
@@ -26,10 +26,11 @@ class WalletsUI {
 
     isDev = process.env.NODE_ENV === "development"
 
-    activeModal: Nullable<WalletPageModals> = null;
+    activeModal: Nullable<WalletPageModals> = this.isDev ? "newPeriod" : null;
     inputWalletTitle: string = '';
     deletingWallet: Nullable<IWallet> = null;
     showErr = false;
+    errText = "";
 
     activePanel: WalletsActivePanels = "1";
     periodSelected?: Period;
@@ -86,9 +87,16 @@ class WalletsUI {
     }
 
     get daysCount(): number|undefined {
-        if (!this.newPeriodStartDate || !this.newPeriodEndDate) return undefined;
-        const start = new Date(this.newPeriodStartDate);
-        const end = new Date(this.newPeriodEndDate);
+        let start;
+        let end;
+        if(this.periodSelected){
+            start = this.periodSelected.startDate
+            end = this.periodSelected.endDate
+        } else {
+            if (!this.newPeriodStartDate || !this.newPeriodEndDate) return undefined;
+            start = new Date(this.newPeriodStartDate);
+            end = new Date(this.newPeriodEndDate);
+        }
         if (isNaN(start.getTime()) || isNaN(end.getTime())) return undefined;
         const daysCount = (end.getTime() - start.getTime()) / (1000 * 3600 * 24) + 1;
         return daysCount;
@@ -113,7 +121,7 @@ class WalletsUI {
     }
 
     get limitsToUpdate(): NewLimitDto[]{
-        return this.limitsUi.map(l=>({category_id: l.category.id, amount: l.amount}))
+        return this.limitsUi.map(l=>({category_id: l.category.id, amount: l.amount, type: l.type}))
     }
 
     periodEdit(period: Period) {
@@ -190,7 +198,7 @@ class WalletsUI {
         const end_date = this.newPeriodEndDate;
         const init_store = this.newPeriodInitStore || 0;
 
-        if (!start_date || !end_date) return this.showFromErr();
+        if (!start_date || !end_date) return this.showFromErr("Не указана дата начала или конца периода");
 
         const getParams: any = {method: 'period_new'};
         const body: any = {
@@ -202,13 +210,13 @@ class WalletsUI {
                 isAddToBalance: item.isAddToBalance,
                 walletId: item.wallet!.id
             })),
-            limits: this.validLimits.map(l=>({categoryId: l.category.id, amount: l.amount}))
+            limits: this.validLimits.map(l=>({categoryId: l.category.id, amount: l.amount, type: l.type}))
         }
 
         this.UIStore.rootStore.doAjax(getParams, {method: "POST", body: JSON.stringify(body)})
             .then(res => res.json())
             .then(res => {
-                if (!res.ok) return this.showFromErr();
+                if (!res.ok) return this.showFromErr(res.err_msg);
                 this.setActiveModal(null);
                 this.UIStore.rootStore.fetchData();
             });
@@ -228,8 +236,9 @@ class WalletsUI {
     changeInputWalletTitle(e: any): void {
         this.inputWalletTitle = e.target.value;
     };
-    showFromErr() {
+    showFromErr(msg: string) {
         this.showErr = true;
+        this.errText = msg
         this.hideErrTimeout = setTimeout(() => {
             this.showErr = false;
         }, 3000);
@@ -249,36 +258,14 @@ class WalletsUI {
                     this.UIStore.rootStore.fetchData();
                 } else {
                     if (res.err === 'invalid') {
-                        this.showFromErr();
+                        this.showFromErr(res.err_msg);
                     }
                 }
             })
     };
 
-    addNewLimit(){
-        this.newLimits.push({amount: 0})
-    }
-
-    removeNewLimit(limit: NewLimit){
-        this.newLimits.splice(this.newLimits.indexOf(limit), 1);
-    }
-
-    setLimitForSelectCategory(limit?: NewLimit){
-        this.limitToSelectCategoryFor = limit
-    }
-
-    selectCategoryForLimit(category?: ICategory){
-        if (this.limitToSelectCategoryFor) {
-            this.limitToSelectCategoryFor.category = category;
-        }
-    }
-
     get validLimits(): ValidLimit[] {
         return this.newLimits.filter(l=> l.category && l.amount) as ValidLimit[]
-    }
-
-    openCategorySelector(categoriesToShow: ICategory[], onSelect: (category?: ICategory) => void) {
-        return undefined;
     }
 
     refreshLimitsUi() {
@@ -289,15 +276,18 @@ class WalletsUI {
 export interface LimitUi {
     category?: ICategory
     amount: number
+    type: LimitType
 }
 export interface NewLimit extends LimitUi {}
 export interface NewLimitDto {
     category_id: number
     amount: number
+    type: LimitType
 }
 export interface ValidLimit {
     category: ICategory
     amount: number
+    type: LimitType
 }
 
 export default WalletsUI;

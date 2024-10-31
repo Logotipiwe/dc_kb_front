@@ -23,18 +23,16 @@ class LimitsList extends React.Component<props, any> {
 
 
     add(){
-        this.props.list.push({amount: 0})
+        this.props.list.push({amount: 0, type: "DAY"})
     }
 
     del(item: LimitUi){
         this.props.list.splice(this.props.list.indexOf(item),1)
     }
     render() {
-        const rootStore = this.props.RootStore!;
-
         return <>
-            {this.props.list.map((l: NewLimit)=>{
-                return <NewLimitItem limit={l} onDelete={this.del}/>
+            {this.props.list.map((l: NewLimit, i)=>{
+                return <NewLimitItem key={i} limit={l} onDelete={this.del}/>
             })}
             <Button onClick={this.add}>+ лимит</Button>
         </>

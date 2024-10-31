@@ -3,7 +3,7 @@ import React from "react";
 import {LimitUi, NewLimit} from "../../../../stores/UIStore/WalletsUI";
 import {Div, Input, SelectMimicry} from "@vkontakte/vkui/dist";
 import RootStore from "../../../../stores/RootStore";
-import {withModalRootContext} from "@vkontakte/vkui";
+import {Checkbox, withModalRootContext} from "@vkontakte/vkui";
 import {Icon24Cancel} from "@vkontakte/icons";
 import {ICategory} from "../../../../global";
 
@@ -45,10 +45,13 @@ class LimitItem extends React.Component<Props, any> {
                     value={limitItem.amount || ""}
                     onChange={e => limitItem.amount = parseInt(e.target.value) || 0}
                 />
-                {/*<Icon24Cancel onClick={walletsUi.removeNewLimit.bind(null, newLimitItem)}/>*/}
                 <Icon24Cancel onClick={e=>this.props.onDelete(limitItem)}/>
             </div>
-            {daysCount ? <span
+            <Checkbox
+                checked={limitItem.type === "DAY"}
+                onChange={e=>{limitItem.type = e.target.checked ? "DAY" : "PERIOD"}}
+            >По дням</Checkbox>
+            {(daysCount && limitItem.type === "DAY") ? <span
                 style={{color: "var(--text_secondary)", marginLeft: 15}}
             >В день: {Math.round(limitItem.amount/daysCount)}</span> : null}
         </Div>

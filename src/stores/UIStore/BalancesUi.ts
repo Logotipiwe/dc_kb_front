@@ -33,13 +33,14 @@ export default class BalancesUi {
         return this.displayModesByCatId[catId.toString()] || this.defaultMode;
     }
 
-    shiftDisplayMode(catId?: number) {
+    shiftDisplayMode(catId?: number, skipBig = true) {
         const mode = this.getDisplayModeByCatId(catId);
         const newModeIndex = this.allModes.indexOf(mode) + 1
         let newMode = newModeIndex < this.allModes.length ? this.allModes[newModeIndex] : this.allModes[0]
         if(newMode === "hidden" && !catId) {
             newMode = this.allModes[0]
         }
+        if(skipBig && newMode === 'big') newMode = "row"
         this.setNewDisplayMode(newMode, catId)
     }
 

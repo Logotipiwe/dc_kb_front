@@ -9,6 +9,8 @@ import {inject, observer} from "mobx-react/dist";
 import RootStore from "../../stores/RootStore";
 import Balance from "./components/Balance";
 import {fmt} from "../../utils/functions";
+import {CatIdToDateToBalance, DateToBalance} from "../../global";
+import balance from "./components/Balance";
 
 @inject("RootStore")
 @observer
@@ -23,16 +25,50 @@ class Home extends React.Component<{ RootStore?: RootStore, key: any, id: any },
 		const wallets = rootStore.walletStore.wallets;
 		const periodBalances = appData.limit_balances;
 
-		const balancesToShow: any[] = [];
-		const balancesToHide: any[] = [];
+		const balancesBig: CatIdToDateToBalance = {};
+		const balancesSmall: CatIdToDateToBalance = {};
+		const balancesToShow: CatIdToDateToBalance = {}
 
-		Object.entries(periodBalances).forEach(catIdToBalance=>{
-			if(uiStore.balancesUi.isBalanceShown(parseInt(catIdToBalance[0]))){
-				balancesToShow.push(catIdToBalance)
+		const balanceCategories = new Set<string>()
+		Object.values(periodBalances.DAY).forEach((catIdToBalance) => catIdToBalance && Object.keys(catIdToBalance).forEach(catId=>balanceCategories.add(catId)));
+
+		balanceCategories.forEach((catId) => {
+			balancesToShow[catId] = {}
+			Object.entries(periodBalances.DAY).forEach(([date, catIdToBalance])=>{
+				balancesToShow[catId][date] = catIdToBalance?.[catId]
+			})
+		});
+		Object.entries(periodBalances.PERIOD).forEach(([catId, {amount}])=>{
+			balancesToShow[catId] = {PERIOD: amount}
+		})
+		Object.entries(balancesToShow).forEach(([catId, dateToBalance])=>{
+			const isBig = (id: string) => uiStore.balancesUi.isBalanceShown(parseInt(id));
+			(isBig(catId) ? balancesBig : balancesSmall)[catId] = dateToBalance
+		})
+
+		// Object.values(periodBalances.DAY).forEach((catIdToBalance) => {
+		// 	if(catIdToBalance){
+		//
+		// 	} else {
+		//
+		// 	}
+		//
+		// 	Object.entries(catIdToBalance)
+		// 	if(uiStore.balancesUi.isBalanceShown(parseInt(catId))){
+		// 		balancesBig[catId] = balance
+		// 	} else {
+		// 		balancesSmall[catId] = balance;
+		// 	}
+		// })
+/*
+		Object.entries(periodBalances).forEach(([catId, balance])=>{
+			if(uiStore.balancesUi.isBalanceShown(parseInt(catId))){
+				balancesBig[catId] = balance
 			} else {
-				balancesToHide.push(catIdToBalance);
+				balancesSmall[catId] = balance;
 			}
 		})
+*/
 
 		const stored = analytics.stored - analytics.invested;
 
@@ -47,16 +83,16 @@ class Home extends React.Component<{ RootStore?: RootStore, key: any, id: any },
 									{!rootStore.isAllBalancesNull
                                         && <>
 											<Balance balance={balances}/>
-											{balancesToShow.map(periodBalance=> {
-												const categoryId = parseInt(periodBalance[0])
+											{Object.entries(balancesBig).map(([catId, balance])=> {
+												const categoryId = parseInt(catId)
 												const category = rootStore.transactionsStore.categories[categoryId]
-												return <Balance balance={periodBalance[1]} category={category}/>
+												return <Balance balance={balance} category={category}/>
 											})}
 											<div style={{display: "flex", padding: 12, flexWrap: "wrap"}}>
-												{balancesToHide.map(periodBalance=> {
-													const categoryId = parseInt(periodBalance[0])
+												{Object.entries(balancesSmall).map(([catId, balance])=> {
+													const categoryId = parseInt(catId)
 													const category = rootStore.transactionsStore.categories[categoryId]
-													return <Balance balance={periodBalance[1]} category={category}/>
+													return <Balance balance={balance} category={category}/>
 												})}
 											</div>
                                         </>}

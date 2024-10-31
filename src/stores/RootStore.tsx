@@ -1,4 +1,4 @@
-import {action, computed, makeAutoObservable, observable} from "mobx";
+import {makeAutoObservable} from "mobx";
 import WalletStore from './WalletStore'
 import TransactionsStore from "./TransactionsStore"
 import UIStore from "./UIStore";
@@ -6,7 +6,15 @@ import React from "react";
 import {Period} from "./models/Period";
 import PeriodStore from "./PeriodStore";
 import Wallet from "./models/Wallet";
-import {IGetData, IGetDataAnsResponse, IGetDataResponse, IPeriod, Limit} from "../global";
+import {
+	IGetData,
+	IGetDataAnsResponse,
+	IGetDataLimitBalances,
+	IGetDataResponse,
+	IPeriod,
+	Limit,
+	CatIdToDateToBalance
+} from "../global";
 import autoBind from "../utils/autoBind";
 
 export interface RootStoreProp{
@@ -47,24 +55,8 @@ class RootStore {
 
 		this.appData = {
 			...appData,
-			limit_balances: this.processLimitBalances(appData.limit_balances)
+			limit_balances: appData.limit_balances
 		};
-	}
-
-	processLimitBalances(limit_balances: Record<string, Record<string, number> | null>) {
-		const res: Record<string, Record<string, number>> = {}
-		Object.entries(limit_balances).forEach(limitBalance=>{
-			const date = limitBalance[0];
-			if(limitBalance[1]) {
-				Object.entries(limitBalance[1]).forEach(categoryToAmount=>{
-					const categoryId = categoryToAmount[0]
-					const amount = categoryToAmount[1]
-					if(!res[categoryId]) res[categoryId] = {}
-					res[categoryId]![date] = amount
-				})
-			}
-		})
-		return res;
 	}
 
 	objToGet = (get_data: any): string => {
