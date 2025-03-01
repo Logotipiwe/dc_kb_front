@@ -39,9 +39,9 @@ jobs:
     - name: Upload
       uses: garygrossgarten/github-action-scp@release
       with:
-        local: .
+        local: kb_front.yml
         concurrency: 20
-        remote: /kuber/kb_front
+        remote: /kuber/kb_front/kb_front.yml
         host: ${{ env.DC_HOST }}
         username: ${{ env.SSH_USER }}
         password: ${{ env.SSH_PASSWORD }}
@@ -53,8 +53,6 @@ jobs:
         password: ${{ env.SSH_PASSWORD }}
         port: 22
         script: |
-          echo var1 ${KB_FRONT_IMAGE}
-          echo var2 ${{ env.KB_FRONT_IMAGE }}
           export KB_FRONT_IMAGE=${{ env.KB_FRONT_IMAGE }}
           docker-compose -f /kuber/kb_front/kb_front.yml down --remove-orphans
           docker-compose -f /kuber/kb_front/kb_front.yml up -d
