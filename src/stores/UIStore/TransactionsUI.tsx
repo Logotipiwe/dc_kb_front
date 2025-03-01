@@ -1,15 +1,18 @@
-import {action, computed, makeAutoObservable, observable} from "mobx";
+import {makeAutoObservable} from "mobx";
 import UIStore from "../UIStore";
 import Wallet from "../models/Wallet";
 import {ICategory, Nullable, TransModal, TransValueTypes} from "../../global";
 import autoBind from "../../utils/autoBind";
-import transactionsStore from "../TransactionsStore";
 
 export default class TransactionsUI {
 	constructor(UIStore: UIStore) {
 		makeAutoObservable(this)
 		autoBind(this)
 		this.UIStore = UIStore;
+
+		if(this.isDev){
+			this.activeModal = "newTrans"
+		}
 	}
 
 	UIStore: UIStore;
@@ -22,7 +25,7 @@ export default class TransactionsUI {
 	selectedWallet: Nullable<Wallet> = null;
 	selectedToWallet: Nullable<number> = null;
 	isAddToBalance: boolean = true;
-	selectedType: number = this.isDev ? 1 : 1;
+	selectedType: number = 1;
 	isNewValueAsInvest: boolean = false;
 	isUnnecessary: boolean = false;
 	selectedCategory?: ICategory;
@@ -72,8 +75,11 @@ export default class TransactionsUI {
 		return Object.values(this.UIStore.rootStore.transactionsStore.categories).filter(c => c.parent === selected.id);
 	}
 
-	changeType(e: any) {
-		let id = parseInt(e.target.value);
+	onChangeType(e: any) {
+		this.changeType(parseInt(e.target.value))
+	};
+
+	changeType(id: number) {
 		if (id === 2) {
 			this.selectedToWallet = this.UIStore.rootStore.walletStore.wallets[1].id;
 		} else {
@@ -81,17 +87,19 @@ export default class TransactionsUI {
 		}
 		this.selectedType = id;
 		this.selectedCategory = undefined;
+	}
+
+	onChangeWalletId = (e: any) => {
+		this.changeWalletId(parseInt(e.target.value))
 	};
 
-	changeWalletId = (e: any) => {
+	changeWalletId = (id: number) => {
 		const {walletStore} = this.UIStore.rootStore;
-		const val = parseInt(e.target.value);
-
-		this.selectedWallet = walletStore.getWallet(val);
-		if (val === this.selectedToWallet) {
+		this.selectedWallet = walletStore.getWallet(id);
+		if (id === this.selectedToWallet) {
 			this.selectedToWallet = walletStore.availableToWallets[0].id;
 		}
-	};
+	}
 
 	changeIsAddToBalance(e: any){
 		this.isAddToBalance = !!(e.target.checked);

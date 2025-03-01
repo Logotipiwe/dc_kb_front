@@ -28,3 +28,19 @@
 .CardGrid .category_card_outer {
 	width: calc((100% - 3*8px)/4) !important;
 }
+
+.wallet-fast-click-item {
+	flex-grow: 0;
+	background-color: rgba(63, 138, 224, .23);
+	border-radius: 4px;
+	padding: 1px 8px;
+	margin: 8px 0 0;
+}
+
+.type-fast-click-item{
+	flex-grow: 0;
+	background-color: rgba(169, 169, 169, .23);
+	border-radius: 4px;
+	padding: 1px 6px;
+	margin: 8px 0 0;
+}

@@ -17,7 +17,7 @@ export class TypeSelect extends React.Component<RootStoreProp, any> {
         return <>
             <Select
                 className={"my_form_select"}
-                onChange={transactionsUI.changeType}
+                onChange={transactionsUI.onChangeType}
                 value={(transactionsUI.selectedType !== null) ? transactionsUI.selectedType : typesToShow[0].id}
             >
                 {typesToShow.map(type =>

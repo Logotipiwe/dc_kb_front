@@ -39,6 +39,8 @@ import CategoriesPanel from "./components/CategoriesPanel";
 import rootStore from "../../stores/RootStore";
 import Popouts from "../../components/Popouts";
 import {fmt} from "../../utils/functions";
+import { WalletFastClickItem } from './components/WalletFastClickItem';
+import {TypeFastClickItem} from "./components/TypeFastClickItem";
 
 @inject('RootStore')
 @observer
@@ -58,7 +60,7 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 		const {transactionsUI} = uiStore;
 		const {transactionsStore} = rootStore;
 		const {categories, transactions} = transactionsStore;
-		const {availableToWallets} = rootStore.walletStore;
+		const {availableToWallets, wallets} = rootStore.walletStore;
 		const currentBalance = Object.values(rootStore.balances!)[0];
 
 		const transValType = transactionsUI.selectedTransValueType;
@@ -111,12 +113,38 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 						</FormStatus>}
 
 						<div style={{display: "flex"}}>
-							{transactionsUI.selectedType !== 4 && <FormField style={{flexGrow: 1}}>
-								<WalletSelect/>
-							</FormField>}
-							{transValType === 'transValue' ? <FormField style={{flexGrow: 1}}>
-								<TypeSelect/>
-							</FormField> : null}
+							{transactionsUI.selectedType !== 4 && <div
+								style={{display: 'flex', flexDirection: "column", flexGrow: 1}}
+							>
+								<FormField>
+									<WalletSelect/>
+								</FormField>
+								<div style={{display: "flex", margin: "0 10px", justifyContent: "space-around"}}>
+									{wallets.map((w, i) => {
+										return <WalletFastClickItem
+											key={w.id}
+											i={i}
+											wallet={w}
+										/>
+									})}
+								</div>
+							</div>
+							}
+							{transValType === 'transValue' ?
+								<div style={{display: "flex", flexDirection: "column", flexGrow: 1}}>
+									<FormField>
+										<TypeSelect/>
+									</FormField>
+									<div style={{display: "flex", margin: "0 10px", justifyContent: "space-around"}}>
+										{transactionsStore.types.map((t, i) => {
+											return <TypeFastClickItem
+												key={t.id}
+												i={i}
+												type={t}
+											/>
+										})}
+									</div>
+								</div> : null}
 						</div>
 
 						<FormField top={valueFieldTitle}>
@@ -124,9 +152,9 @@ class Transactions extends React.Component<{ RootStore?: RootStore, id: any, key
 						</FormField>
 
 						{(transactionsUI.transactionDiff > 0 || transactionsUI.selectedType === 3)
-						&& <Checkbox
-							checked={transactionsUI.isAddToBalance}
-							onChange={transactionsUI.changeIsAddToBalance}
+							&& <Checkbox
+								checked={transactionsUI.isAddToBalance}
+								onChange={transactionsUI.changeIsAddToBalance}
 						>Зачислить в баланс</Checkbox>
 						}
 						{(transactionsUI.selectedTransValueType === "walletValue" && transactionsUI.transactionDiff < 0) &&

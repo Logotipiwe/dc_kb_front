@@ -15,7 +15,7 @@ export class WalletSelect extends React.Component<RootStoreProp, any>{
         return (<>
                     <Select
                         className={"my_form_select"}
-                        onChange={transactionsUI.changeWalletId}
+                        onChange={transactionsUI.onChangeWalletId}
                         top='Счет'
                         value={(transactionsUI.selectedWallet !== null) ? transactionsUI.selectedWallet.id : wallets[0].id}>
                         {wallets.map(wallet => {

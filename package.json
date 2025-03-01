@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "homepage": "keepbalancevk",
     "scripts": {
-        "start": "cross-env PORT=10888 HTTPS=false react-scripts start",
+        "start": "PORT=10888 HTTPS=false react-scripts start",
         "build": "react-scripts build",
         "predeploy": "npm run build",
         "deploy": "vk-miniapps-deploy"

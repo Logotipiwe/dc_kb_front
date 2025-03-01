@@ -40,7 +40,7 @@ class UIStore {
 	popoutsUi: PopoutsUi;
 	balancesUi: BalancesUi;
 
-	activeStory: ActiveStories = this.isDev ? "home" : 'home';
+	activeStory: ActiveStories = this.isDev ? "transactions" : 'home';
 
 	onStoryChange = (e: any) => {
 		this.activeStory = e.currentTarget.dataset.story;

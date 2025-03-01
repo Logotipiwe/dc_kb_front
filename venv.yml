@@ -1,0 +1,10 @@
+name: front_venv
+services:
+  venv:
+    build:
+      dockerfile: Dockerfile2
+    volumes:
+      - .:/app
+    ports:
+      - "10888:10888"
+#    command: tail -F anything
