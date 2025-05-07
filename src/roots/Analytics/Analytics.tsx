@@ -52,7 +52,7 @@ class Analytics extends React.Component<{ RootStore?: RootStore, key: any, id: a
                                 Вложено:
                         </Cell> : null}
                         <Cell
-                            indicator={(<span style={{color: "green"}}>{fmt(storeValue+initStored)}</span>)}>
+                            indicator={(<span style={{color: "green"}}>{fmt(analytics.stored-analytics.invested)}</span>)}>
                             Разница:
                         </Cell>
                     </Group>
